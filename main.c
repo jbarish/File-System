@@ -34,11 +34,14 @@ void readDirectories(char* fileName){
  * Param fileName  the file to read
  */
 void readFile(char* fileName){
-	/*TODO: Parse the file */
+	/*TODO: Parse the file 
+			File is in format: permissions	numLinks	ownerName	ownerGroup	fileSize	timeStamp	directory/FileName
+			We only care about fileSize, timeStamp, and directory/FileName
+			*/
 	
 	
 	/* TODO: for each file, call:
-	 *   addFullFileFromRoot(Tree t, char* fullName, long size, long timestamp)
+	 *   addFullFileFromRoot(Tree t, char* fullName, long size, char* timestamp)
 	 *   This will add it to the tree in the correct spot 
 	 *   Use global variable: filesystem as the tree
 	 */

@@ -51,7 +51,7 @@ TreeNode makeDirNode(char* dirName){
 	d->children=makeLL(TREE);
 	d->fileName = NULL;
 	d->size = -1;
-	d->timestamp =-1;
+	d->timestamp =NULL;
 	d->data = NULL;
 	return d;
 }
@@ -64,7 +64,7 @@ TreeNode makeDirNode(char* dirName){
  * Param ts        The timestamp of the file
  * Return          The newly made TreeNode
  */
-TreeNode makeFileNode(char* fName, long s, long ts){
+TreeNode makeFileNode(char* fName, long s, char* ts){
 	TreeNode d = (TreeNode)malloc(sizeof(struct treeNode));
 	
 	d->dir = NULL;
@@ -183,7 +183,7 @@ TreeNode parseTree(Tree t, char* fullName){
  * Param size      The size of the file
  * Param timestamp The timestamp of the file
  */
-TreeNode addFileFromRoot(Tree t, char* fullName, char* fileName, long size, long timestamp){
+TreeNode addFileFromRoot(Tree t, char* fullName, char* fileName, long size, char* timestamp){
 	TreeNode curr = parseTree(t, fullName);
 	int filePos = check(curr->children, fileName);
 	if(filePos!= -1){
@@ -204,7 +204,7 @@ TreeNode addFileFromRoot(Tree t, char* fullName, char* fileName, long size, long
  * Param size      The size of the file
  * Param timestamp The timestamp of the file
  */
-TreeNode addFullFileFromRoot(Tree t, char* fullName, long size, long timestamp){
+TreeNode addFullFileFromRoot(Tree t, char* fullName, long size, char* timestamp){
 	char* fName = strrchr(fullName, '/') +1;
 	int loc = (int)(fName - fullName-1);
 	char* path= malloc(sizeof(loc+1));

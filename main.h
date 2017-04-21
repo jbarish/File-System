@@ -25,7 +25,7 @@ struct treeNode{
 	
 	char* fileName;
 	long size;
-	long timestamp;
+	char* timestamp;
 	LL data;
 }; typedef struct treeNode* TreeNode;
 
@@ -34,8 +34,8 @@ Tree makeTree();
 void addDirFromRoot(Tree t, char* fullName);
 void printPreOrder(Tree t);
 void printTnode(LL q);
-TreeNode addFullFileFromRoot(Tree t, char* fullName, long size, long timestamp);
-TreeNode addFileFromRoot(Tree t, char* fullName, char* fileName, long size, long timestamp);
+TreeNode addFullFileFromRoot(Tree t, char* fullName, long size, char* timestamp);
+TreeNode addFileFromRoot(Tree t, char* fullName, char* fileName, long size, char* timestamp);
 
 LL makeLL(listType ty);
 void* removeAt(LL list, int pos);
