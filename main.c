@@ -38,7 +38,7 @@ void readFile(char* fileName){
 	
 	
 	/* TODO: for each file, call:
-	 *   addFileFromRoot(Tree t, char* fullName, char* fileName, long size, long timestamp);
+	 *   addFullFileFromRoot(Tree t, char* fullName, long size, long timestamp)
 	 *   This will add it to the tree in the correct spot 
 	 *   Use global variable: filesystem as the tree
 	 */
@@ -56,6 +56,7 @@ int main(int argc, char *argv[]){
 	
 	
 	fileSystem = makeTree();
+	
 	
 	/*TODO: Implement the following functions, and replace nulls with args*/
 	readDirectories(NULL);

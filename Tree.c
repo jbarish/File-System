@@ -106,6 +106,7 @@ void addDirFromRoot(Tree t, char* fullName){
 	}
 	TreeNode curr = t->root;
 	
+	
 	/*curr is always 1 behind i*/
 	for(i = 1; i<numNames; i++){
 		
@@ -123,18 +124,18 @@ void addDirFromRoot(Tree t, char* fullName){
 		curr = (TreeNode)getElemAt(curr->children, nodePos);
 		
 	}
+	free(names);
+	free(tempName);
 }
 
 /*
- * Add a file to the tree
+ * Given a tree, traverses it according to the path specified in fullName
  * 
- * Param t         The tree structure
- * Param fullName  The FULLNAME of the directory, starting from the root name
- * Param fileName  The name of the file
- * Param size      The size of the file
- * Param timestamp The timestamp of the file
+ * Param t        The tree to parse
+ * Param fullName The full name of the directory, starting from root
+ * Return         Pointer to the last specified directory
  */
-void addFileFromRoot(Tree t, char* fullName, char* fileName, long size, long timestamp){
+TreeNode parseTree(Tree t, char* fullName){
 	int numNames = countOccurance(fullName, '/') +1; 
 	char** names = (char**)malloc(sizeof(char*)*numNames);
 	int i=0;
@@ -151,7 +152,7 @@ void addFileFromRoot(Tree t, char* fullName, char* fileName, long size, long tim
 	numNames = counter; /*handle case of root directory ./ */
 	
 	if(t->root==NULL){
-		perror("Path does not exist in current file structure. Cannot add file"), exit(1);
+		perror("Path does not exist in current file structure."), exit(1);
 	}
 	
 	TreeNode curr = t->root;
@@ -163,17 +164,57 @@ void addFileFromRoot(Tree t, char* fullName, char* fileName, long size, long tim
 		int nodePos = check(curr->children, node);
 		
 		if(nodePos==-1){
-			perror("Path does not exist in current file structure. Cannot add file"), exit(1);
+			perror("Path does not exist in current file structure. "), exit(1);
 		}
 		curr = (TreeNode)getElemAt(curr->children, nodePos);
 	}
+	free(names);
+	free(tempName);
+	return curr;
+}
+
+
+/*
+ * Add a file to the tree
+ * 
+ * Param t         The tree structure
+ * Param fullName  The FULLNAME of the directory, starting from the root name
+ * Param fileName  The name of the file
+ * Param size      The size of the file
+ * Param timestamp The timestamp of the file
+ */
+TreeNode addFileFromRoot(Tree t, char* fullName, char* fileName, long size, long timestamp){
+	TreeNode curr = parseTree(t, fullName);
 	int filePos = check(curr->children, fileName);
 	if(filePos!= -1){
 		/*file already exists */
 		printf("File Already Exists!\n");
+		return NULL;
 	}else{
-		append(curr->children, makeFileNode(fileName, size, timestamp));
+		TreeNode temp = makeFileNode(fileName, size, timestamp);
+		append(curr->children, temp);
+		return temp;
 	}
+}
+/*
+ * Add a file to the tree
+ * 
+ * Param t         The tree structure
+ * Param fullName  The FULLNAME of the directory and file, starting from the root name
+ * Param size      The size of the file
+ * Param timestamp The timestamp of the file
+ */
+TreeNode addFullFileFromRoot(Tree t, char* fullName, long size, long timestamp){
+	char* fName = strrchr(fullName, '/') +1;
+	int loc = (int)(fName - fullName-1);
+	char* path= malloc(sizeof(loc+1));
+	strncpy(path, fullName, loc);
+	path[loc] = '\0';
+	printf("Path = %s, Fname = %s\n", path, fName);
+	TreeNode temp =  addFileFromRoot( t, path, fName,  size,  timestamp);
+	free(path);
+	return temp;
+
 }
 
 /*
@@ -185,47 +226,42 @@ void addFileFromRoot(Tree t, char* fullName, char* fileName, long size, long tim
  * Return          The pointer to the tree node that contains that file
  */
 TreeNode findFile(Tree t, char* fullName, char* fileName){
-	int numNames = countOccurance(fullName, '/') +1; 
-	char** names = (char**)malloc(sizeof(char*)*numNames);
-	int i=0;
-	int counter = 0;
-	char* tempName = (char*)malloc(sizeof(char)*strlen(fullName));
-	strcpy(tempName, fullName);
-	char* s = strtok(tempName,"/");
-	
-	while(s!=NULL){
-		counter++;
-		names[i++] = s;
-		s = strtok(NULL,"/");
-	}
-	numNames = counter; /*handle case of root directory ./ */
-	
-	if(t->root==NULL){
-		perror("Path does not exist in current file structure. Cannot find file"), exit(1);
-	}
-	
-	TreeNode curr = t->root;
-	
-	/*curr is always 1 behind i*/
-	for(i = 1; i<numNames; i++){
-		
-		char* node = names[i];
-		int nodePos = check(curr->children, node);
-		
-		if(nodePos==-1){
-			perror("Path does not exist in current file structure. Cannot find file"), exit(1);
-		}
-		curr = (TreeNode)getElemAt(curr->children, nodePos);
-	}
+	TreeNode curr = parseTree(t, fullName);
 	int filePos = check(curr->children, fileName);
 	TreeNode res = NULL;
 	if(filePos!= -1){
 		res = (TreeNode)getElemAt(curr->children, filePos);
 	}else{
-		perror("Cannot find file"), exit(1);
+		printf("Cannot find file\n");
 	}
 	return res;
 }
+
+/* 
+ * Delete a given file or directory
+ *
+ * Param t          The tree structure
+ * Param fullName   The full path, starting from root
+ * Param deleteName The file/directory to deleteFromRoot
+ */
+TreeNode deleteFromRoot(Tree t, char* fullName, char* deleteName){
+	TreeNode curr = parseTree(t, fullName);
+	int filePos = check(curr->children, deleteName);
+	TreeNode res = NULL;
+	if(filePos!= -1){
+		res = (TreeNode)getElemAt(curr->children, filePos);
+		if((res->children != NULL && isEmpty(res->children)) || res->data!=NULL){
+			removeAt(curr->children, filePos);
+		}else if(res->children != NULL && !isEmpty(res->children)){
+			printf("Directory is not empty\n");
+			return NULL;
+		}
+	}else{
+		printf("Cannot find file/directory");
+	}
+	return res;
+}
+
 
 /*
  * Preorder helper function
@@ -236,6 +272,7 @@ void preOrder(TreeNode t, char* path, int root){
 		if(t->dir!=NULL){
 			
 			char* str = (char*)malloc(sizeof(char)*(strlen(path) + strlen(t->dir))+1);
+			str[0] = '\0';
 			strcat(str, path);
 			if(strlen(path)!=0){
 				strcat(str, "/");	
@@ -249,11 +286,37 @@ void preOrder(TreeNode t, char* path, int root){
 			for(int i = 0; i< getNumElements(t->children); i++){
 				preOrder((TreeNode)getElemAt(t->children, i), str,0);
 			}
+			free(str);
 		}else{
-			
 			printf("%s/%s\n", path, t->fileName);
 		}
 	}
+}
+
+/*
+ * Frees all internal data of a tree node
+ * ALERT! Also frees the passed in tree node!!!
+ *
+ * Param t   the TreeNode to be freed
+ */
+void freeTreeNode(TreeNode t){
+	if(t->dir!=NULL){
+		free(t->dir);
+	}
+	if(t->children!=NULL){
+		disposeLL(t->children);
+		free(t->children);
+	}
+	if(t->fileName!=NULL){
+		free(t->fileName);
+	}
+	t->size = 0;
+	t->timestamp=0;
+	if(t->data!=NULL){
+		disposeLL(t->data);
+		free(t->data);
+	}
+	free(t);
 }
 
 /*
@@ -268,6 +331,7 @@ void printPreOrder(Tree t){
 	/*print the root*/
 	preOrder(start, str,1);
 }
+
 /*
 int main(){
 	Tree t = makeTree();
@@ -284,12 +348,20 @@ int main(){
 	addFileFromRoot( t, "./B/D", "Hello.txt", 0, 0);
 	
 	addFileFromRoot( t, "./", "B.txt", 0, 0);
-	//printf("fileName= %s\n", findFile(t, "./B/D", "Hello.txt")->fileName);
+	addFullFileFromRoot(t, "./B/e.txt", 0, 0);
+	
+	printPreOrder(t);
+	TreeNode temp = deleteFromRoot(t, "./B", "C");
+	printf("dfileName= %s\n",temp->dir);
+	freeTreeNode(temp);
+	temp =findFile(t, "./B" , "e.txt");
+	printf("fileName= %s\n", temp->fileName);
+	
 	printPreOrder(t);
 	return 0;
 }
-	
 */
+
 
 
 
