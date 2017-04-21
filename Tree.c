@@ -332,7 +332,21 @@ void printPreOrder(Tree t){
 	preOrder(start, str,1);
 }
 
+void disposeTree(TreeNode t){
+	if(t!=NULL){
+		if(t->dir!=NULL){
+			for(int i = 0; i< getNumElements(t->children); i++){
+				disposeTree((TreeNode)getElemAt(t->children, i));
+			}
+			freeTreeNode(t);
+		}else{
+			freeTreeNode(t);
+		}
+	}
+}
+
 /*
+
 int main(){
 	Tree t = makeTree();
 	addDirFromRoot( t, "./");
@@ -358,6 +372,8 @@ int main(){
 	printf("fileName= %s\n", temp->fileName);
 	
 	printPreOrder(t);
+	disposeTree(t->root);
+	free(t);
 	return 0;
 }
 */
