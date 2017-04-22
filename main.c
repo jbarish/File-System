@@ -20,12 +20,23 @@ int blockSize; /*size of block, given as arg */
   */
 void readDirs(char* fileName){
 	
-	/*TODO: Parse the file */
-	
-	/* TODO: for each directory, call addDirFromRoot(Tree t, char* fullName); 
-	 *    This will add it to the tree in the correct spot 
-	 *    Use global variable: filesystem as the tree 
-	 */
+  /*TODO: Parse the file */
+  FILE* fp;
+  char str[2048];
+  
+  /*read from file */
+  while(fgets(str, 2048, fp) != NULL){
+    if(strlen(str) > 1){/* ensure no blank lines at end of file */
+      sscanf(str, "s", &str);
+
+      /* TODO: for each directory, call addDirFromRoot(Tree t, char* fullName); 
+       *    This will add it to the tree in the correct spot 
+       *    Use global variable: filesystem as the tree 
+       */
+
+    }
+  }
+  fclose(fp);
 }
  
 /*
