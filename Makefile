@@ -2,7 +2,7 @@
 NAME=File
 
 # List of all .cpp source code files included in your program (separated by spaces):
-SRC=LinkedList.c Tree.c main.c
+SRC=LinkedList.c Tree.c ldisk.c main.c
 
 
 
