@@ -22,7 +22,6 @@ void readDirs(char* fileName){
 	
 	/*TODO: Parse the file */
 	
-	
 	/* TODO: for each directory, call addDirFromRoot(Tree t, char* fullName); 
 	 *    This will add it to the tree in the correct spot 
 	 *    Use global variable: filesystem as the tree 
@@ -35,17 +34,44 @@ void readDirs(char* fileName){
  * Param fileName  the file to read
  */
 void readFile(char* fileName){
-	/*TODO: Parse the file 
-			File is in format: permissions	numLinks	ownerName	ownerGroup	fileSize	timeStamp	directory/FileName
-			We only care about fileSize, timeStamp, and directory/FileName
-			*/
-	
-	
-	/* TODO: for each file, call:
-	 *   addFullFileFromRoot(Tree t, char* fullName, long size, char* timestamp)
-	 *   This will add it to the tree in the correct spot 
-	 *   Use global variable: filesystem as the tree
-	 */
+  /*TODO: Parse the file 
+    File is in format: 
+    permissions	
+    numLinks	
+    ownerName	
+    ownerGroup	
+    fileSize	
+    timeStamp	
+    directory/FileName
+    We only care about fileSize, timeStamp, and directory/FileName
+    need int, string, and string
+  */
+  FILE* fp;
+  char str[2048];/*entire string */
+  long fstNum;
+  long sndNum;
+  char perm[20];
+  long thdNum;
+  char nameOne[5];
+  char nameTwo[5];
+  long fileSize;
+  char timeStamp[25];
+  char fileName[1024];/*if segfault malloc for char */
+
+  /* read from file */
+  while(fgets(str, 2048, fp) != NULL){
+    if(strlen(str) > 1){ /*ensure no blank lines at end of file */
+      sscanf(str, "%l %l %s  %l %s %s %l %s %s", &fstNum, &sndNum, &perm, &thdNum, &nameOne, &nameTwo, &fileSize, &timeStamp, &fileName); /*format input string into temp */
+      
+      /* TODO: for each file, call:
+       *   addFullFileFromRoot(Tree t, char* fullName, long size, char* timestamp)
+       *   This will add it to the tree in the correct spot 
+       *   Use global variable: filesystem as the tree
+       */
+      
+    }
+  }
+  fclose(fp);
 }
  
  
