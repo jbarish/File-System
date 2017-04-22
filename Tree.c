@@ -5,7 +5,8 @@
  * We pledge our honor that we have abided by the Stevens Honor System 
  */
  
- #include "main.h"
+ #include "Tree.h"
+ 
  
 
 /*Initialize the tree
@@ -196,6 +197,7 @@ TreeNode addFileFromRoot(Tree t, char* fullName, char* fileName, long size, char
 		return temp;
 	}
 }
+
 /*
  * Add a file to the tree
  * 

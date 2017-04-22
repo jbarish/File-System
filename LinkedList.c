@@ -1,4 +1,6 @@
-#include "main.h"
+#include "LinkedList.h"
+#include "Tree.h"
+#include "LDisk.h"
 
 /*
  * Justin Barish
@@ -6,13 +8,6 @@
  *
  * We pledge our honor that we have abided by the Stevens Honor System 
  */
-
-struct node{
-	void* elem;
-	struct node* next;
-	struct node* prev;
-};
-typedef struct node* Node;
 
 
 /*
@@ -52,6 +47,23 @@ void printLLString(LL q){
 	printf("\n");
 }
 
+
+
+/*
+ * Debugging Only: Prints all elements in the List from tail to head
+ * ALERT: Elements MUST be a STRING to use this function
+ * 
+ * Param q  The LinkedList
+ */
+void printRLLString(LL q){
+	Node curr = q->tail;
+	while(curr!=NULL){
+		printf("%s,", (char*)curr->elem);
+		curr = curr->prev;
+	}
+	printf("\n");
+}
+
 /*
  * Debugging Only: Prints all elements in the List from head to tail
  * ALERT: Elements MUST be a TREENODE to use this function
@@ -68,19 +80,54 @@ void printTnode(LL q){
 }
 
 /*
- * Debugging Only: Prints all elements in the List from tail to head
- * ALERT: Elements MUST be a STRING to use this function
+ * Debugging Only: Prints all elements in the List from head to tail
+ * ALERT: Elements MUST be a LDisk to use this function
  * 
  * Param q  The LinkedList
  */
-void printRLLString(LL q){
-	Node curr = q->tail;
+void printLDnode(LL q){
+	Node curr = q->head;
 	while(curr!=NULL){
-		printf("%s,", (char*)curr->elem);
-		curr = curr->prev;
+		printf("Min:%i, Max:%i, Status: %s ||", ((LDisk)curr->elem)->minBlock, 
+		((LDisk)curr->elem)->maxBlock, ((LDisk)curr->elem)->st== FREE ? "FREE" : "USED");
+		curr = curr->next;
 	}
 	printf("\n");
 }
+
+/*
+ * Remove a node
+ *
+ * Param LL  The LinkedList
+ * Param n   The node to remove
+ *
+ * Return    A void pointer to the element that was removed
+ */
+void* removeNode(LL list, Node n){
+	
+	Node curr= n;
+	void* temp = curr->elem;
+	
+	/*if was first thing in list, reset head. Otherwise, relink nodes*/
+	if(curr->prev==NULL){
+		list->head = curr->next;
+	}else{
+		curr->prev->next = curr->next;
+	}
+	
+	/*if was last thing in list, reset tail */
+	if(curr->next == NULL){
+		list->tail = curr->prev;
+	}else{
+		curr->next->prev = curr->prev;
+	}
+	
+	free(curr);
+	list->numElements--;
+	
+	return temp;
+}
+
 
 /*
  * Remove a node at a specified position
@@ -104,31 +151,10 @@ void* removeAt(LL list, int pos){
 		Node curr= list->head;
 		for( i=0; i<list->numElements; i++){
 			if(i==pos){
-				void* temp = curr->elem;
-				
-				/*if was first thing in list, reset head. Otherwise, relink nodes*/
-				if(curr->prev==NULL){
-					list->head = curr->next;
-				}else{
-					curr->prev->next = curr->next;
-				}
-				
-				
-				/*if was last thing in list, reset tail */
-				if(curr->next == NULL){
-					list->tail = curr->prev;
-				}else{
-					curr->next->prev = curr->prev;
-				}
-				
-				free(curr);
-				list->numElements--;
-				
-				return temp;
+				return removeNode(list, curr);
 			}
 			curr = curr->next;
 		}
-		
 	}
 	/*if nothing was removed*/
 	return NULL;
@@ -282,6 +308,34 @@ void* getElemAt(LL l, int pos){
 	return curr->elem;
 }
 
+/*
+ * get the node at the ith index from the LinkedList
+ * Not for external use
+ *
+ * Param LL    The LinkedList
+ * Param pos   The position in the linked list to get the element from
+ *             Will clamp pos to [0,list length]
+ */
+void* getNodeAt(LL l, int pos){
+	int i;
+	Node curr= l->head;
+	if(pos<0) {
+		return NULL;
+	}
+	if(pos>l->numElements) {
+		return NULL;
+	}
+	
+	for( i=0; i<l->numElements && curr!=NULL; i++){
+		if(i==pos){
+			break;
+		}
+		curr = curr->next;
+	}
+	return curr;
+}
+
+
 
 /* 
  * Delete all nodes in the List
@@ -300,13 +354,9 @@ void disposeLL(LL q){
 	q->tail = NULL;
 }
 
-
 /*
-
-
-
 int main(){
-	LL l = makeLL();
+	LL l = makeLL(LDISK);
 	
 	addAt(l, 0, "s");
 	addAt(l, 0, "t");
@@ -340,8 +390,8 @@ int main(){
 
 	disposeLL(l);
 	printLLString(l);
-		
-	return 0;
+	
+
 }
 */
 
