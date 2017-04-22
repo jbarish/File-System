@@ -125,7 +125,7 @@ LDisk makeLD(int min, int max, statusType t){
 	ld->st = t;
 	return ld;
 }
-
+/*
 int main(){
 	LL l = makeLL(LDISK);
 	
@@ -148,4 +148,4 @@ int main(){
 	requestMemory(l, 1, 10,1, USED);
 	printLDnode(l);	
 	return 0;
-}
+}*/
