@@ -9,7 +9,8 @@
 
  /*Our tree structure for the file system */
  Tree fileSystem;
- 
+int diskSize; /*size of disk, given as arg */
+int blockSize; /*size of block, given as arg */
  
  
  /*
@@ -17,7 +18,7 @@
   *
   * Param fileName  the file to read
   */
-void readDirectories(char* fileName){
+void readDirs(char* fileName){
 	
 	/*TODO: Parse the file */
 	
@@ -56,13 +57,20 @@ int main(int argc, char *argv[]){
 		exit(1);
 	}
 	/*TODO: Extract args & set globals, error check args*/
-	
+	if(atoi(argv[4]) > 0){
+	  blockSize = atoi(argv[4]);
+	}else{
+	  perror("Must give a positive, non-zero block size ");
+	  exit(1);
+	}
+	if(atoi(argv[3]) > 0){
+	  diskSize = atoi(argv[3]);
+	}else{
+	  perror("Must give a positive, non-zero disk size ");
+	  exit(1);
+	}
+	readFile(argv[1]);
+	readDirs(argv[2]);
 	
 	fileSystem = makeTree();
-	
-	
-	/*TODO: Implement the following functions, and replace nulls with args*/
-	readDirectories(NULL);
-	readFile(NULL);
 }
-
