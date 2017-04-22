@@ -24,8 +24,6 @@ typedef struct node* Node;
 
 LL makeLL(listType ty);
 
-void printLLString(LL q);
-void printRLLString(LL q);
 void printTnode(LL q);
 void printLDnode(LL q);
 

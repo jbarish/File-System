@@ -24,31 +24,32 @@ void readDirs(char* fileName){
   /*TODO: Parse the file */
   FILE* fp;
   char str[2048];
-  char* newStr = (char*)malloc(sizeof(char)*2048);
+  char newStr[2048];
+  //char* newStr = (char*)malloc(sizeof(char)*2048);
   newStr[0] = '\0';
   fp = fopen(fileName, "r");
 
-  printf("2: defs\n");
+  //printf("2: defs\n");
   
   /*read from file */
   while(fgets(str, 2048, fp) != NULL){
     if(strlen(str) > 1){/* ensure no blank lines at end of file */
       
-      printf("2: before thing\n");
+     // printf("2: before thing\n");
       
       sscanf(str, "%s", newStr);
       
-      printf("2: looped\n");
+      //printf("2: looped\n");
 
       /* TODO: for each directory, call addDirFromRoot(Tree t, char* fullName); 
        *    This will add it to the tree in the correct spot 
        *    Use global variable: fileSystem as the tree 
        */
       addDirFromRoot(fileSystem, newStr);
-      printf("2: added\n");
+     // printf("2: added\n");
     }
   }
-  free(newStr);
+  //free(newStr);
   fclose(fp);
 }
  
@@ -74,24 +75,24 @@ void readFile(char* fileName){
   char str[2048];/*entire string */
   long fstNum;
   long sndNum;
-  char* perm;
+  char perm[10];
   long thdNum;
-  char* nameOne;
-  char* nameTwo;
+  char nameOne[1024];
+  char nameTwo[1024];
   long fileSize;
   char timeStampM[7];
   char timeStampN[5];
   char timeStampTwo[13];
-  char fName[1024];/*if segfault malloc for char */
+  char fName[1024];
   fp = fopen(fileName, "r");
-  printf("3: defs\n");
+//  printf("3: defs\n");
 
   /* read from file */
   while(fgets(str, 2048, fp) != NULL){
     if(strlen(str) > 1){ /*ensure no blank lines at end of file */
-      sscanf(str, "%ld %ld %s %ld %s %s %ld %s %s %s %s", &fstNum, &sndNum, perm, &thdNum, nameOne, nameTwo, &fileSize, timeStampM, timeStampN, timeStampTwo, fName); /*format input string into temp */
-      printf("3: read\n");
-      
+      sscanf(str, "%ld %ld %s %ld %s %s %ld %s %s %s %[^\n]", &fstNum, &sndNum, perm, &thdNum, nameOne, nameTwo, &fileSize, timeStampM, timeStampN, timeStampTwo, fName); /*format input string into temp */
+      //printf("3: read\n");
+   //   printf("%ld, %ld, %s, %ld, %s, %s, %ld, %s, %s, %s, %s\n",fstNum,sndNum, perm, thdNum, nameOne, nameTwo, fileSize, timeStampM, timeStampN, timeStampTwo, fName);
       /* TODO: for each file, call:
        *   addFullFileFromRoot(Tree t, char* fullName, long size, char* timestamp)
        *   This will add it to the tree in the correct spot 
@@ -100,11 +101,14 @@ void readFile(char* fileName){
       char* timeStampF = (char*)malloc(sizeof(char) * 35);
       timeStampF[0] = '\0';
       strcat(timeStampF, timeStampM);
+	   strcat(timeStampF, " ");
       strcat(timeStampF, timeStampN);
+	    strcat(timeStampF, " ");
       strcat(timeStampF, timeStampTwo);
-      printf("3: made timeStamp\n");
-      addFullFileFromRoot(fileSystem, fileName, fileSize, timeStampF);
-      printf("3: added\n");
+     // printf("3: made timeStamp\n");
+	//  printf("fileName=%s, ts = %s\n", fName, timeStampF);
+      addFullFileFromRoot(fileSystem, fName, fileSize, timeStampF);
+      //printf("3: added\n");
     }
   }
   fclose(fp);
@@ -131,11 +135,12 @@ int main(int argc, char *argv[]){
 	  perror("Must give a positive, non-zero disk size ");
 	  exit(1);
 	}
-	printf("first\n");
+	//printf("first\n");
 	fileSystem = makeTree();
-	printf("second\n");
+	//printf("second\n");
 	readDirs(argv[2]);
-	printf("third\n");
+	//printf("third\n");
 	readFile(argv[1]);
-	
+	printPreOrder(fileSystem);
+	return 0;
 }

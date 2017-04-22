@@ -45,7 +45,7 @@ int countOccurance(char* fullName, char c){
  */
 TreeNode makeDirNode(char* dirName){
 	TreeNode d = (TreeNode)malloc(sizeof(struct treeNode));
-	d->dir = malloc(sizeof(char)*strlen(dirName));
+	d->dir = malloc(sizeof(char)*strlen(dirName)+1);
 	
 	strcpy(d->dir,dirName);
 
@@ -71,7 +71,7 @@ TreeNode makeFileNode(char* fName, long s, char* ts){
 	d->dir = NULL;
 	d->children=NULL;
 	
-	d->fileName = malloc(sizeof(char)*strlen(fName));
+	d->fileName = malloc(sizeof(char)*strlen(fName)+1);
 	strcpy(d->fileName,fName);
 	d->size = s;
 	d->timestamp =ts;
@@ -90,7 +90,7 @@ void addDirFromRoot(Tree t, char* fullName){
 	char** names = (char**)malloc(sizeof(char*)*numNames);
 	int counter = 0;
 	int i=0;
-	char* tempName = (char*)malloc(sizeof(char)*strlen(fullName));
+	char* tempName = (char*)malloc(sizeof(char)*strlen(fullName)+1);
 	strcpy(tempName, fullName);
 	
 	/*turn the name string into an array of individual directory names */
@@ -119,8 +119,11 @@ void addDirFromRoot(Tree t, char* fullName){
 		}
 		nodePos = check(curr->children, node);
 		if(nodePos==-1){
-			printf("Error Code:%i\n", i);
-			perror("something wrong with the tree"), exit(1);
+			
+			perror("Fatal Error: File System Corrupted. "); 
+			printf("Error Code: %i\n", i);
+			exit(1);
+			
 		}
 		curr = (TreeNode)getElemAt(curr->children, nodePos);
 		
@@ -141,7 +144,7 @@ TreeNode parseTree(Tree t, char* fullName){
 	char** names = (char**)malloc(sizeof(char*)*numNames);
 	int i=0;
 	int counter = 0;
-	char* tempName = (char*)malloc(sizeof(char)*strlen(fullName));
+	char* tempName = (char*)malloc(sizeof(char)*strlen(fullName)+1);
 	strcpy(tempName, fullName);
 	char* s = strtok(tempName,"/");
 	
@@ -153,7 +156,8 @@ TreeNode parseTree(Tree t, char* fullName){
 	numNames = counter; /*handle case of root directory ./ */
 	
 	if(t->root==NULL){
-		perror("Path does not exist in current file structure."), exit(1);
+		printf("Path does not exist in current file structure.");
+		return NULL;
 	}
 	
 	TreeNode curr = t->root;
@@ -165,7 +169,8 @@ TreeNode parseTree(Tree t, char* fullName){
 		int nodePos = check(curr->children, node);
 		
 		if(nodePos==-1){
-			perror("Path does not exist in current file structure. "), exit(1);
+			printf("Path does not exist in current file structure.");
+			return NULL;
 		}
 		curr = (TreeNode)getElemAt(curr->children, nodePos);
 	}
@@ -189,7 +194,7 @@ TreeNode addFileFromRoot(Tree t, char* fullName, char* fileName, long size, char
 	int filePos = check(curr->children, fileName);
 	if(filePos!= -1){
 		/*file already exists */
-		printf("File Already Exists!\n");
+		printf("File Already Exists! - %s/%s\n", fullName, fileName);
 		return NULL;
 	}else{
 		TreeNode temp = makeFileNode(fileName, size, timestamp);
@@ -209,10 +214,10 @@ TreeNode addFileFromRoot(Tree t, char* fullName, char* fileName, long size, char
 TreeNode addFullFileFromRoot(Tree t, char* fullName, long size, char* timestamp){
 	char* fName = strrchr(fullName, '/') +1;
 	int loc = (int)(fName - fullName-1);
-	char* path= malloc(sizeof(loc+1));
+	char* path= malloc(sizeof(char)*(loc+1));
 	strncpy(path, fullName, loc);
 	path[loc] = '\0';
-	printf("Path = %s, Fname = %s\n", path, fName);
+	//printf("Path = %s, Fname = %s\n", path, fName);
 	TreeNode temp =  addFileFromRoot( t, path, fName,  size,  timestamp);
 	free(path);
 	return temp;
@@ -273,7 +278,7 @@ void preOrder(TreeNode t, char* path, int root){
 	if(t!=NULL){
 		if(t->dir!=NULL){
 			
-			char* str = (char*)malloc(sizeof(char)*(strlen(path) + strlen(t->dir))+1);
+			char* str = (char*)malloc(sizeof(char)*(strlen(path) + strlen(t->dir)+2));
 			str[0] = '\0';
 			strcat(str, path);
 			if(strlen(path)!=0){
@@ -313,7 +318,10 @@ void freeTreeNode(TreeNode t){
 		free(t->fileName);
 	}
 	t->size = 0;
-	t->timestamp=0;
+	if(t->timestamp!=NULL){
+		free(t->timestamp);
+	}
+	
 	if(t->data!=NULL){
 		disposeLL(t->data);
 		free(t->data);
@@ -332,6 +340,7 @@ void printPreOrder(Tree t){
 	str[0] = '\0';
 	/*print the root*/
 	preOrder(start, str,1);
+	free(str);
 }
 
 void disposeTree(TreeNode t){
