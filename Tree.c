@@ -295,7 +295,9 @@ void preOrder(TreeNode t, char* path, int root){
 			}
 			free(str);
 		}else{
-			printf("%s/%s\n", path, t->fileName);
+			printf("%s/%s %s: ", path, t->fileName, t->timestamp);
+			printLLInt(t->data);
+			printf("\n");
 		}
 	}
 }

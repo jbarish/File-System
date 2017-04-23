@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-
+int blockSize; /*size of block, given as arg */
 
 
 

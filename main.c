@@ -1,6 +1,8 @@
 #include "main.h"
 #include "Tree.h"
-
+#include "LinkedList.h"
+#include "LDisk.h"
+#include "FileMemory.h"
 /*
  * Justin Barish
  * Jack Kraszewski
@@ -10,9 +12,9 @@
 
 /*Our tree structure for the file system */
 Tree fileSystem;
-int diskSize; /*size of disk, given as arg */
-int blockSize; /*size of block, given as arg */
+long diskSize; /*size of disk, given as arg */
 
+LL lDiskList;
  
  /*
   * Read in the directories from the fileName
@@ -107,7 +109,9 @@ void readFile(char* fileName){
       strcat(timeStampF, timeStampTwo);
      // printf("3: made timeStamp\n");
 	//  printf("fileName=%s, ts = %s\n", fName, timeStampF);
-      addFullFileFromRoot(fileSystem, fName, fileSize, timeStampF);
+		
+      allocate(addFullFileFromRoot(fileSystem, fName, fileSize, timeStampF), lDiskList, 1);
+	  
       //printf("3: added\n");
     }
   }
@@ -137,10 +141,18 @@ int main(int argc, char *argv[]){
 	}
 	//printf("first\n");
 	fileSystem = makeTree();
+	lDiskList = makeLL(LDISK);
+	
+	
+	append(lDiskList, makeLD(0, (int)(diskSize-1)/blockSize, FREE));
+	
 	//printf("second\n");
 	readDirs(argv[2]);
 	//printf("third\n");
+	printf("Reading in files. Please Wait...\n");
 	readFile(argv[1]);
-	printPreOrder(fileSystem);
+	//printLDnode(lDiskList);
+	//printPreOrder(fileSystem);
+	
 	return 0;
 }

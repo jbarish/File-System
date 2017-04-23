@@ -20,6 +20,14 @@
  * Add to head
  */
 
+ struct linkedlist {
+	struct node* head;
+	struct node* tail;
+	int numElements;
+	listType t;
+};
+ 
+ 
 /*Initialize the LL
  * 
  * Return         the newly malloc'ed LL
@@ -47,6 +55,20 @@ void printLLString(LL q){
 	printf("\n");
 }
 
+/*
+ * Debugging Only: Prints all elements in the List from head to tail
+ * ALERT: Elements MUST be a Integer to use this function
+ * 
+ * Param q  The LinkedList
+ */
+void printLLInt(LL q){
+	Node curr = q->head;
+	while(curr!=NULL){
+		printf("%i->", *((int*)curr->elem));
+		curr = curr->next;
+	}
+	printf("\n");
+}
 
 
 /*
@@ -88,7 +110,7 @@ void printTnode(LL q){
 void printLDnode(LL q){
 	Node curr = q->head;
 	while(curr!=NULL){
-		printf("Min:%i, Max:%i, Status: %s ||", ((LDisk)curr->elem)->minBlock, 
+		printf("Min:%ld, Max:%ld, Status: %s ||", ((LDisk)curr->elem)->minBlock, 
 		((LDisk)curr->elem)->maxBlock, ((LDisk)curr->elem)->st== FREE ? "FREE" : "USED");
 		curr = curr->next;
 	}
@@ -228,7 +250,22 @@ void addAt(LL list, int pos, void* elem){
  *
  */
 void append(LL list, void* elem){
-	addAt(list, list->numElements, elem);
+	Node n = (Node)malloc(sizeof(struct node));
+	n->elem = elem;
+	n->next = NULL;
+	n->prev = NULL;
+	if(list->head!= NULL){
+		list->tail->next = n;
+		n->prev = list->tail;
+		list->tail = n;
+		list->numElements++;
+	}else{
+		
+		list->head = n;
+		list->tail = n;
+		list->numElements++;
+	}
+	//addAt(list, list->numElements, elem);
 }
 
 /*
@@ -274,6 +311,15 @@ int check(LL q, void* elem ){
 				}
 				break;
 			}
+			case LDISK:
+			{
+				long blockID = *((long*)elem);
+				LDisk ld = (LDisk)(curr->elem);
+				if(blockID>=ld->minBlock && blockID <=ld->maxBlock){
+					return counter;
+				}
+				break;
+			}
 		}
 		curr = curr->next;
 		counter++;
@@ -310,7 +356,6 @@ void* getElemAt(LL l, int pos){
 
 /*
  * get the node at the ith index from the LinkedList
- * Not for external use
  *
  * Param LL    The LinkedList
  * Param pos   The position in the linked list to get the element from
@@ -334,6 +379,18 @@ void* getNodeAt(LL l, int pos){
 	}
 	return curr;
 }
+
+/*
+ * get the last node of the list
+ *
+ * Param LL    The LinkedList
+ */
+void* getLastNode(LL l){
+	return l->tail;
+}
+
+
+
 
 
 

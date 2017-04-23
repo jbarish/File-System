@@ -5,13 +5,13 @@
 typedef enum {USED, FREE} statusType;
 
 struct lDiskNode{
-	int minBlock;
-	int maxBlock;
+	long minBlock;
+	long maxBlock;
 	statusType st;
 }; typedef struct lDiskNode* LDisk;
 
 
 void requestMemory(LL l, int index, int start, int size, statusType blockStatus);
-LDisk makeLD(int min, int max, statusType t);
+LDisk makeLD(long min, long max, statusType t);
 
 #endif

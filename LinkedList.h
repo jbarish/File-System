@@ -7,12 +7,8 @@
 
 typedef enum {TREE, LFILE, LDISK} listType; 
 
-struct linkedlist {
-	struct node* head;
-	struct node* tail;
-	int numElements;
-	listType t;
-}; typedef struct linkedlist* LL;
+struct linkedlist; 
+typedef struct linkedlist* LL;
 
 struct node{
 	void* elem;
@@ -26,6 +22,7 @@ LL makeLL(listType ty);
 
 void printTnode(LL q);
 void printLDnode(LL q);
+void printLLInt(LL q);
 
 void* removeNode(LL list, Node n);
 void* removeAt(LL list, int pos);
@@ -39,6 +36,7 @@ int isEmpty(LL l);
 int check(LL q, void* elem );
 void* getElemAt(LL l, int pos);
 void* getNodeAt(LL l, int pos);
+void* getLastNode(LL l);
 
 void disposeLL(LL q);
 
