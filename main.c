@@ -120,39 +120,102 @@ void readFile(char* fileName){
  
  
 int main(int argc, char *argv[]){
-	
-	/*extract args and error check */
-	if(argc < 5){
-		perror("Must provide 4 arguments");
-		exit(1);
-	}
-	/*TODO: Extract args & set globals, error check args*/
-	if(atoi(argv[4]) > 0){
-	  blockSize = atoi(argv[4]);
-	}else{
-	  perror("Must give a positive, non-zero block size ");
-	  exit(1);
-	}
-	if(atoi(argv[3]) > 0){
-	  diskSize = atoi(argv[3]);
-	}else{
-	  perror("Must give a positive, non-zero disk size ");
-	  exit(1);
-	}
-	//printf("first\n");
-	fileSystem = makeTree();
-	lDiskList = makeLL(LDISK);
-	
-	
-	append(lDiskList, makeLD(0, (int)(diskSize-1)/blockSize, FREE));
-	
-	//printf("second\n");
-	readDirs(argv[2]);
-	//printf("third\n");
-	printf("Reading in files. Please Wait...\n");
-	readFile(argv[1]);
-	//printLDnode(lDiskList);
-	//printPreOrder(fileSystem);
-	
-	return 0;
+  /*variables*/
+  char* buffer;
+  int n = 0;
+  int counter = 0;
+  char* temp;
+  int sizeToRead = 1024;
+  int first = 1;
+  buffer = (char*)malloc(1024);
+  
+  /*extract args and error check */
+  if(argc < 5){
+    perror("Must provide 4 arguments");
+    exit(1);
+  }
+  /*TODO: Extract args & set globals, error check args*/
+  if(atoi(argv[4]) > 0){
+    blockSize = atoi(argv[4]);
+  }else{
+    perror("Must give a positive, non-zero block size ");
+    exit(1);
+  }
+  if(atoi(argv[3]) > 0){
+    diskSize = atoi(argv[3]);
+  }else{
+    perror("Must give a positive, non-zero disk size ");
+    exit(1);
+  }
+  //printf("first\n");
+  fileSystem = makeTree();
+  lDiskList = makeLL(LDISK);
+  
+  //handle inputs
+  while(1){
+    counter = 0;
+    sizeToRead = 1024;
+    while(fgets(buffer, sizeToRead, stdin)){
+      buffer -= counter;
+      counter += sizeToRead;
+      temp = realloc(buffer, counter*2);
+      if(temp == NULL){
+	perror("Realloc failed"), exit(1);
+      }else{
+	buffer = temp;
+	buffer += counter;
+      }
+      if(first){
+	first = 0;
+      }else{
+	sizeToRead *= 2;
+      }
+      if(*(buffer - 1) == '\n'){
+	*(buffer - 1) = '\0';
+	break;
+      }
+    }
+    buffer[n-1] = '\0';
+    buffer -= counter;
+    if(n >= 0){
+      if(strcmp(buffer, "exit") == 0){
+	printf("exit\n");
+      }else if(strncmp(buffer, "cd", 3) == 0){
+	printf("cd\n");
+      }else if(strncmp(buffer, "cd ..", 5) == 0){
+	printf("cd ..\n");
+      }else if(strcmp(buffer, "ls") == 0){
+	printf("ls\n");
+      }else if(strncmp(buffer, "mkdir", 5) == 0){
+	printf("mkdir\n");
+      }else if(strncmp(buffer, "create", 6) == 0){
+	printf("create\n");
+      }else if(strncmp(buffer, "append", 6) == 0){
+	printf("append\n");
+      }else if(strncmp(buffer, "remove", 6) == 0){
+	printf("remove\n");
+      }else if(strncmp(buffer, "delete", 6) == 0){
+	printf("delete\n");
+      }else if(strcmp(buffer, "dir") == 0){
+	printf("dir\n");
+      }else if(strcmp(buffer, "prfiles") == 0){
+	printf("prfiles\n");
+      }else if(strcmp(buffer, "prdisk") == 0){
+	printf("prdisk\n");
+      }
+    }
+  }
+  
+  
+  append(lDiskList, makeLD(0, (int)(diskSize-1)/blockSize, FREE));
+  
+  //printf("second\n");
+  readDirs(argv[2]);
+  //printf("third\n");
+  printf("Reading in files. Please Wait...\n");
+  readFile(argv[1]);
+  //printLDnode(lDiskList);
+  //printPreOrder(fileSystem);
+  
+  return 0;
 }
