@@ -7,7 +7,12 @@
 
 typedef enum {TREE, LFILE, LDISK} listType; 
 
-struct linkedlist; 
+struct linkedlist {
+	struct node* head;
+	struct node* tail;
+	int numElements;
+	listType t;
+}; 
 typedef struct linkedlist* LL;
 
 struct node{

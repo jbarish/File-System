@@ -151,25 +151,23 @@ int main(int argc, char *argv[]){
   fileSystem = makeTree();
   lDiskList = makeLL(LDISK);
   
-  //handle inputs
+  
+  
+  
+  append(lDiskList, makeLD(0, (int)(diskSize-1)/blockSize, FREE));
+  
+  //printf("second\n");
+  readDirs(argv[2]);
+  //printf("third\n");
+  printf("Reading in files. Please Wait...\n");
+  readFile(argv[1]);
+  //printLDnode(lDiskList);
+  //printPreOrder(fileSystem);
+
+  //handle inputs replace fgets with getline
   while(1){
-    counter = 0;
     sizeToRead = 1024;
-    while(fgets(buffer, sizeToRead, stdin)){
-      buffer -= counter;
-      counter += sizeToRead;
-      temp = realloc(buffer, counter*2);
-      if(temp == NULL){
-	perror("Realloc failed"), exit(1);
-      }else{
-	buffer = temp;
-	buffer += counter;
-      }
-      if(first){
-	first = 0;
-      }else{
-	sizeToRead *= 2;
-      }
+    while(scanf("%[^\n]", buffer)){
       if(*(buffer - 1) == '\n'){
 	*(buffer - 1) = '\0';
 	break;
@@ -205,17 +203,6 @@ int main(int argc, char *argv[]){
       }
     }
   }
-  
-  
-  append(lDiskList, makeLD(0, (int)(diskSize-1)/blockSize, FREE));
-  
-  //printf("second\n");
-  readDirs(argv[2]);
-  //printf("third\n");
-  printf("Reading in files. Please Wait...\n");
-  readFile(argv[1]);
-  //printLDnode(lDiskList);
-  //printPreOrder(fileSystem);
   
   return 0;
 }

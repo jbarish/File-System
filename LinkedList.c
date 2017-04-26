@@ -19,13 +19,6 @@
  *
  * Add to head
  */
-
- struct linkedlist {
-	struct node* head;
-	struct node* tail;
-	int numElements;
-	listType t;
-};
  
  
 /*Initialize the LL
