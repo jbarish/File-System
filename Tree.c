@@ -214,12 +214,22 @@ int pathExist(Tree t, char* fullName){
 	for(i = 1; i<numNames; i++){
 		
 		char* node = names[i];
+
+		if(curr->children==NULL){
+			return 0;
+		}
+	
 		int nodePos = check(curr->children, node);
 		
 		if(nodePos==-1){
+
 			return 0;
 		}
+		
 		curr = (TreeNode)getElemAt(curr->children, nodePos);
+		if(curr!=NULL && curr->children == NULL){
+			return 0;
+		}
 	}
 	free(names);
 	free(tempName);

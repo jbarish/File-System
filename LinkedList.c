@@ -88,10 +88,15 @@ void printRLLString(LL q){
 void printTnode(LL q){
 	Node curr = q->head;
 	while(curr!=NULL){
-		printf("%s,", ((TreeNode)curr->elem)->dir);
+		TreeNode tn =  ((TreeNode)curr->elem);
+		if(tn->dir!=NULL){
+			printf("%s/\n",tn->dir);
+		}else if(tn->fileName != NULL){
+			printf("%s\n",tn->fileName);
+		}
 		curr = curr->next;
 	}
-	printf("\n");
+	//printf("\n");
 }
 
 /*
@@ -297,7 +302,7 @@ int check(LL q, void* elem ){
 			case TREE:
 			{
 				char* tn = (char*)elem;
-				TreeNode c = (TreeNode)(curr->elem);				
+				TreeNode c = (TreeNode)(curr->elem);			
 				if(c->dir!=NULL && strcmp(tn,c->dir)==0 ||
 					(c->fileName!=NULL && strcmp(tn,c->fileName)==0 )){
 					return counter;

@@ -1,3 +1,5 @@
+#define _GNU_SOURCE
+
 #include "main.h"
 #include "Tree.h"
 #include "LinkedList.h"
@@ -15,6 +17,7 @@ Tree fileSystem;
 long diskSize; /*size of disk, given as arg */
 
 LL lDiskList;
+char* curDir;
  
  /*
   * Read in the directories from the fileName
@@ -117,15 +120,84 @@ void readFile(char* fileName){
   }
   fclose(fp);
 }
- 
+
+/*print out the current directory path*/
+void printCur(char* curDir){
+  printf("FILESYSTEM: %s $: ", curDir);
+}
+
+/*exit the simulation*/
+void exitFileSystem(){
+  //cleanup
+  printf("Leaving FILESYSTEM...\n");
+  exit(0);
+}
+
+/*change the directory*/
+void cd(char* path){
+  char* tempOldPath = (char*) malloc(sizeof(char)*strlen(curDir)+1);
+ strcpy(tempOldPath, curDir);
+ int numNames = countOccurance(path, '/') + 1;
+ char** names = (char**) malloc(sizeof(char*)*numNames);
+ if(numNames > 1){
+   int counter = 0;
+   int i = 0;
+   char* tempName = (char*) malloc(sizeof(char)*strlen(path)+1);
+    strcpy(tempName, path);
+    char* s = strtok(tempName, "/");
+    while(s!=NULL){
+      counter++;
+      names[i++];
+      s=strtok(NULL, "/");
+    
+    }
+    free(tempName);
+ }else{
+    names[0] = path;
+  }
+    //numNames = counter; //handle case of root
+ for(int i = 0; i<numNames; i++){
+   printf("here:%s\n", names[i]);
+ }
+
+  for(int i = 0; i< numNames; i++){
+    if(strcmp("..", names[i]) == 0){
+      if(strcmp(".", curDir) == 0){
+	printf("Invalid Directory\n");
+	strcpy(curDir, tempOldPath);
+	free(tempOldPath);
+	return;
+      }else{
+	char* newDir = strrchr(curDir, '/');
+	int loc = (int) (newDir-curDir);
+	char* path = malloc(sizeof(char)*(loc+1));
+	strncpy(path, curDir, loc);
+	path[1] = '\0';
+	strcpy(curDir, path);
+	
+	free(path);
+      }
+    }else{
+      strcat(curDir, "/");
+       printf("here:%s\n", names[i]);
+      strcat(curDir, names[i]);
+    }
+  }
+  if(!pathExist(fileSystem,curDir)){
+    printf("Invalid Directory\n");
+    strcpy(curDir, tempOldPath);
+    free(tempOldPath);
+  }
+  
+}
  
 int main(int argc, char *argv[]){
   /*variables*/
   char* buffer;
-  char* curDir = (char*)malloc(2048);
+  curDir = (char*)malloc(2048);
   curDir[0] = '\0';
   buffer = (char*)malloc(2048);
-  
+  size_t sizetoread = 2048;
   /*extract args and error check */
   if(argc < 5){
     perror("Must provide 4 arguments");
@@ -159,19 +231,22 @@ int main(int argc, char *argv[]){
   printf("Reading in files. Please Wait...\n");
   readFile(argv[1]);
   //printLDnode(lDiskList);
-  printPreOrder(fileSystem);
-
+  // printPreOrder(fileSystem);
+  curDir = ((TreeNode)(parseTree(fileSystem, "")))->dir;
+  //printf("%s\n", curDir);
   //handle inputs replace fgets with getline
   while(1){
-    scanf("%s[^\n]", buffer);
+    printCur(curDir);
+    int n = getline(&buffer, &sizetoread, stdin);
+    buffer[n-1] = '\0';
+    
     if(strcmp(buffer, "exit") == 0){
-      printf("exit\n");
-    }else if(strncmp(buffer, "cd", 3) == 0){
-      printf("cd\n");
-    }else if(strncmp(buffer, "cd ..", 5) == 0){
-      printf("cd ..\n");
+      exitFileSystem();
+    }else if(strncmp(buffer, "cd ", 3) == 0){
+      // printf("here %s\n", buffer);
+      cd(buffer+3);
     }else if(strcmp(buffer, "ls") == 0){
-      printf("ls\n");
+      printTnode(((TreeNode)parseTree(fileSystem, curDir))->children);
     }else if(strncmp(buffer, "mkdir", 5) == 0){
       printf("mkdir\n");
       }else if(strncmp(buffer, "create", 6) == 0){

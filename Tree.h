@@ -24,6 +24,8 @@ Tree makeTree();
 TreeNode makeDirNode(char* dirName);
 TreeNode makeFileNode(char* fName, long s, char* ts);
 
+int countOccurance(char*, char);
+
 TreeNode parseTree(Tree t, char* fullName);
 int pathExist(Tree t, char* fullName);
 
