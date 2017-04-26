@@ -181,6 +181,53 @@ TreeNode parseTree(Tree t, char* fullName){
 
 
 /*
+ * Given a tree, traverses it according to the path specified in fullName
+ * Checks if a given file path is in the tree
+ * 
+ * Param t        The tree to parse
+ * Param fullName The full name of the directory, starting from root
+ * Return         Pointer to the last specified directory
+ */
+int pathExist(Tree t, char* fullName){
+	int numNames = countOccurance(fullName, '/') +1; 
+	char** names = (char**)malloc(sizeof(char*)*numNames);
+	int i=0;
+	int counter = 0;
+	char* tempName = (char*)malloc(sizeof(char)*strlen(fullName)+1);
+	strcpy(tempName, fullName);
+	char* s = strtok(tempName,"/");
+	
+	while(s!=NULL){
+		counter++;
+		names[i++] = s;
+		s = strtok(NULL,"/");
+	}
+	numNames = counter; /*handle case of root directory ./ */
+	
+	if(t->root==NULL){
+		return 0;
+	}
+	
+	TreeNode curr = t->root;
+	
+	/*curr is always 1 behind i*/
+	for(i = 1; i<numNames; i++){
+		
+		char* node = names[i];
+		int nodePos = check(curr->children, node);
+		
+		if(nodePos==-1){
+			return 0;
+		}
+		curr = (TreeNode)getElemAt(curr->children, nodePos);
+	}
+	free(names);
+	free(tempName);
+	return 1;
+}
+
+
+/*
  * Add a file to the tree
  * 
  * Param t         The tree structure
