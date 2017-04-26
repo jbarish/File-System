@@ -36,4 +36,5 @@ fclean: clean
 
 re: fclean all
 
-
+run:
+	./File file_list.txt dir_list.txt 1000000000 1024

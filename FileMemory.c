@@ -57,6 +57,9 @@
  void allocate(TreeNode tn, LL l, int load){
 	long numBlocks = (long)ceil(tn->size/(double)blockSize);
 	if(!load){
+		if(tn->timestamp != NULL){
+			free(tn->timestamp);
+		}
 		tn->timestamp = getTimeAsString();
 	}
 	for(int i = 0; i<getNumElements(l)&& numBlocks >0; i++){
@@ -94,6 +97,9 @@
   * Param size The size to add to the file
   */
  void expand(TreeNode tn, LL l, long size){
+	 if(tn->timestamp != NULL){
+			free(tn->timestamp);
+	}
 	 tn->timestamp = getTimeAsString();
 	 long numBytesInLastBlock = tn->size%blockSize;
 	 tn->size +=size;
@@ -129,6 +135,9 @@
   * Param size  The amount to remove from the file
   */
  void shrink(TreeNode tn, LL l, long size){
+	 if(tn->timestamp != NULL){
+			free(tn->timestamp);
+	}
 	 tn->timestamp = getTimeAsString();
 	 long numBytesInLastBlock = tn->size%blockSize;
 	 tn->size -=size;

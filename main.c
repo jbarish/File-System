@@ -139,47 +139,45 @@ void cd(char* path){
  strcpy(tempOldPath, curDir);
  int numNames = countOccurance(path, '/') + 1;
  char** names = (char**) malloc(sizeof(char*)*numNames);
+ char* tempName = (char*) malloc(sizeof(char)*strlen(path)+1);
+ strcpy(tempName, path);
  if(numNames > 1){
    int counter = 0;
    int i = 0;
-   char* tempName = (char*) malloc(sizeof(char)*strlen(path)+1);
-    strcpy(tempName, path);
+   
     char* s = strtok(tempName, "/");
     while(s!=NULL){
       counter++;
-      names[i++];
+      names[i++] = s;
       s=strtok(NULL, "/");
     
     }
-    free(tempName);
+   
  }else{
     names[0] = path;
   }
     //numNames = counter; //handle case of root
- for(int i = 0; i<numNames; i++){
-   printf("here:%s\n", names[i]);
- }
 
   for(int i = 0; i< numNames; i++){
     if(strcmp("..", names[i]) == 0){
+		
       if(strcmp(".", curDir) == 0){
 	printf("Invalid Directory\n");
 	strcpy(curDir, tempOldPath);
 	free(tempOldPath);
 	return;
       }else{
-	char* newDir = strrchr(curDir, '/');
-	int loc = (int) (newDir-curDir);
-	char* path = malloc(sizeof(char)*(loc+1));
-	strncpy(path, curDir, loc);
-	path[1] = '\0';
-	strcpy(curDir, path);
+		char* newDir = strrchr(curDir, '/');
+		int loc = (int) (newDir-curDir);
+		char* path = malloc(sizeof(char)*(loc+1));
+		strncpy(path, curDir, loc);
+		path[loc] = '\0';
+		strcpy(curDir, path);
 	
 	free(path);
       }
     }else{
       strcat(curDir, "/");
-       printf("here:%s\n", names[i]);
       strcat(curDir, names[i]);
     }
   }
@@ -188,6 +186,7 @@ void cd(char* path){
     strcpy(curDir, tempOldPath);
     free(tempOldPath);
   }
+   free(tempName);
   
 }
  
@@ -228,7 +227,7 @@ int main(int argc, char *argv[]){
   //printf("second\n");
   readDirs(argv[2]);
   //printf("third\n");
-  printf("Reading in files. Please Wait...\n");
+  //printf("Reading in files. Please Wait...\n");
   readFile(argv[1]);
   //printLDnode(lDiskList);
   // printPreOrder(fileSystem);
@@ -243,17 +242,31 @@ int main(int argc, char *argv[]){
     if(strcmp(buffer, "exit") == 0){
       exitFileSystem();
     }else if(strncmp(buffer, "cd ", 3) == 0){
-      // printf("here %s\n", buffer);
       cd(buffer+3);
-    }else if(strcmp(buffer, "ls") == 0){
+    }else if(strcmp(buffer, "ls") == 0 && strlen(buffer)==2){
       printTnode(((TreeNode)parseTree(fileSystem, curDir))->children);
     }else if(strncmp(buffer, "mkdir", 5) == 0){
+		/*call addDirFromRoot. This is in Tree.c The tree param is the fileSystem global variable
+		* The fullName param is the current directory (curDir) concatinated with the new directory to be added
+		* Before you call addDirFromRoot, call pathExist to check if the directory already exists
+		*/
       printf("mkdir\n");
-      }else if(strncmp(buffer, "create", 6) == 0){
+    }else if(strncmp(buffer, "create", 6) == 0){
+		/*Call allocate. This is in FileMemory.c . The first param is gotten from calling 
+		addFileFromRoot in Tree.c. Pass NULL as the timestamp param, and get size param from user input
+		     The LL param is our lDiskList global variable, and the load param is 0.
+		Use sscanf like in the readFiles() to extract the file name and bytes */
+	
       printf("create\n");
     }else if(strncmp(buffer, "append", 6) == 0){
+		/* Call expand. THis is in FileMemory.c This funciton is not yet tested.
+		* Get the first param by calling parseTree in tree.c, with fullname being the concatinated curDir and filename
+		* LL is lDiskList
+		* size is amount to add 
+		*/
       printf("append\n");
     }else if(strncmp(buffer, "remove", 6) == 0){
+		/*same as append, but call shink*/
       printf("remove\n");
     }else if(strncmp(buffer, "delete", 6) == 0){
       printf("delete\n");
