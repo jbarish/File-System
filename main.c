@@ -122,12 +122,9 @@ void readFile(char* fileName){
 int main(int argc, char *argv[]){
   /*variables*/
   char* buffer;
-  int n = 0;
-  int counter = 0;
-  char* temp;
-  int sizeToRead = 1024;
-  int first = 1;
-  buffer = (char*)malloc(1024);
+  char* curDir = (char*)malloc(2048);
+  curDir[0] = '\0';
+  buffer = (char*)malloc(2048);
   
   /*extract args and error check */
   if(argc < 5){
@@ -162,46 +159,37 @@ int main(int argc, char *argv[]){
   printf("Reading in files. Please Wait...\n");
   readFile(argv[1]);
   //printLDnode(lDiskList);
-  //printPreOrder(fileSystem);
+  printPreOrder(fileSystem);
 
   //handle inputs replace fgets with getline
   while(1){
-    sizeToRead = 1024;
-    while(scanf("%[^\n]", buffer)){
-      if(*(buffer - 1) == '\n'){
-	*(buffer - 1) = '\0';
-	break;
-      }
-    }
-    buffer[n-1] = '\0';
-    buffer -= counter;
-    if(n >= 0){
-      if(strcmp(buffer, "exit") == 0){
-	printf("exit\n");
-      }else if(strncmp(buffer, "cd", 3) == 0){
-	printf("cd\n");
-      }else if(strncmp(buffer, "cd ..", 5) == 0){
-	printf("cd ..\n");
-      }else if(strcmp(buffer, "ls") == 0){
-	printf("ls\n");
-      }else if(strncmp(buffer, "mkdir", 5) == 0){
-	printf("mkdir\n");
+    scanf("%s[^\n]", buffer);
+    if(strcmp(buffer, "exit") == 0){
+      printf("exit\n");
+    }else if(strncmp(buffer, "cd", 3) == 0){
+      printf("cd\n");
+    }else if(strncmp(buffer, "cd ..", 5) == 0){
+      printf("cd ..\n");
+    }else if(strcmp(buffer, "ls") == 0){
+      printf("ls\n");
+    }else if(strncmp(buffer, "mkdir", 5) == 0){
+      printf("mkdir\n");
       }else if(strncmp(buffer, "create", 6) == 0){
-	printf("create\n");
-      }else if(strncmp(buffer, "append", 6) == 0){
-	printf("append\n");
-      }else if(strncmp(buffer, "remove", 6) == 0){
-	printf("remove\n");
-      }else if(strncmp(buffer, "delete", 6) == 0){
-	printf("delete\n");
-      }else if(strcmp(buffer, "dir") == 0){
-	printf("dir\n");
-      }else if(strcmp(buffer, "prfiles") == 0){
-	printf("prfiles\n");
-      }else if(strcmp(buffer, "prdisk") == 0){
-	printf("prdisk\n");
-      }
+      printf("create\n");
+    }else if(strncmp(buffer, "append", 6) == 0){
+      printf("append\n");
+    }else if(strncmp(buffer, "remove", 6) == 0){
+      printf("remove\n");
+    }else if(strncmp(buffer, "delete", 6) == 0){
+      printf("delete\n");
+    }else if(strcmp(buffer, "dir") == 0){
+      printf("dir\n");
+    }else if(strcmp(buffer, "prfiles") == 0){
+      printf("prfiles\n");
+    }else if(strcmp(buffer, "prdisk") == 0){
+      printf("prdisk\n");
     }
+    
   }
   
   return 0;
