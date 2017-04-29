@@ -412,18 +412,24 @@ void pBFS(TreeNode t, char* path){
 		if(t->dir!=NULL){
 
 			for(int i = 0; i< getNumElements(t->children); i++){
-				printf("%s/%s/", path, (TreeNode)getElemAt(t->children, i)->dir);
+				TreeNode tn = ((TreeNode)getElemAt(t->children, i));
+				if(tn->dir != NULL){
+					printf("%s/%s/\n", path, tn->dir);
+				}
 			}
 			
 			for(int i = 0; i< getNumElements(t->children); i++){
-				char* str = (char*)malloc(sizeof(char)*(strlen(path) + strlen(t->dir)+2));	
-				strcpy(str, path);
-				if(strlen(path)!=0){
-					strcat(str, "/");	
-				}
-				strcat(str, t->dir);
-				pBFS((TreeNode)getElemAt(t->children, i), str);
-				free(str);
+				TreeNode tn =(TreeNode)getElemAt(t->children, i);
+				if(tn->dir != NULL){
+					char* str = (char*)malloc(sizeof(char)*(strlen(path) + strlen(tn->dir)+2));	
+					strcpy(str, path);
+					if(strlen(path)!=0){
+						strcat(str, "/");	
+					}
+					strcat(str, tn->dir);
+					pBFS(tn, str);
+					free(str);
+				}				
 			}
 			
 		}

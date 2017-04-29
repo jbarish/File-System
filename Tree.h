@@ -40,5 +40,6 @@ void freeTreeNode(TreeNode t);
 void disposeTree(TreeNode t);
 
 void printPreOrder(Tree t);
+void printBFS(Tree t);
 
 #endif

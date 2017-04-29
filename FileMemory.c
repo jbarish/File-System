@@ -127,7 +127,7 @@
 	 long numBytesInLastBlock = tn->size%blockSize;
 	 tn->size +=size;
 	 size-= blockSize-numBytesInLastBlock;
-	 long numBlocks = (long)ceil(size/(double)blockSize);
+	 long numBlocks = (long)ceil((double)size/(double)blockSize);
 	 for(int i = 0; i<getNumElements(l) && numBlocks >0; i++){
 		
 		Node temp = getNodeAt(l, i);
@@ -135,7 +135,7 @@
 		if(ld->st==FREE){
 		
 			long blockSlots = ld->maxBlock -ld->minBlock +1;
-			//	printf("blockSlots: %ld, numBlocks: %ld, size: %ld, ld->min: %ld, max:%ld\n", blockSlots, numBlocks, tn->size, ld->minBlock,ld->minBlock+numBlocks);
+				printf("blockSlots: %ld, numBlocks: %ld, size: %ld, ld->min: %ld, max:%ld\n", blockSlots, numBlocks, tn->size, ld->minBlock,ld->minBlock+numBlocks);
 			if( blockSlots>= numBlocks){	
 				addToFileMemory(tn, ld->minBlock, (long)ld->minBlock+numBlocks);
 				requestMemory(l, i, ld->minBlock, numBlocks, USED);
@@ -147,7 +147,7 @@
 			}
 		}
 	}
-	printf("Out of space\n");
+	//printf("Out of space\n");
  }
  
  /*
@@ -167,6 +167,7 @@
 	 if( tn->size < 0){
 		 printf("Cannot Remove %ld from file. Not enough memory in that file. File size is now 0.\n", size);
 		 tn->size = 0;
+		 return;
 	 }
 	
 	 size -= numBytesInLastBlock;
