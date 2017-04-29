@@ -286,10 +286,9 @@ int main(int argc, char *argv[]){
     }else if(strcmp(buffer, "dir") == 0){
 		printBFS(fileSystem);
     }else if(strcmp(buffer, "prfiles") == 0){
-      printf("prfiles\n");
+      printFiles(fileSystem);
     }else if(strcmp(buffer, "prdisk") == 0){
-		
-      printf("prdisk\n");
+      printLDnode(lDiskList);
     }
     
   }

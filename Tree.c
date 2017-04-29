@@ -360,6 +360,37 @@ void preOrder(TreeNode t, char* path, int root){
 }
 
 /*
+ * PrintFiles helper function
+ * Not for external use
+ */
+void pFS(TreeNode t, char* path, int root){
+	if(t!=NULL){
+		if(t->dir!=NULL){
+			
+			char* str = (char*)malloc(sizeof(char)*(strlen(path) + strlen(t->dir)+2));
+			str[0] = '\0';
+			strcat(str, path);
+			if(strlen(path)!=0){
+				strcat(str, "/");	
+			}
+			strcat(str, t->dir);
+			if(root){
+				printf("/");
+			}
+			printf("\n");
+			for(int i = 0; i< getNumElements(t->children); i++){
+				pFS((TreeNode)getElemAt(t->children, i), str,0);
+			}
+			free(str);
+		}else{
+		  printf("%s/%s timestamp:%s size:%ld blocks:", path, t->fileName, t->timestamp, t->size);
+		  printLLInt(t->data);
+		  printf("\n");
+		}
+	}
+}
+
+/*
  * Frees all internal data of a tree node
  * ALERT! Also frees the passed in tree node!!!
  *
@@ -399,6 +430,20 @@ void printPreOrder(Tree t){
 	str[0] = '\0';
 	/*print the root*/
 	preOrder(start, str,1);
+	free(str);
+}
+
+/*
+ * Print the files using pFS
+ * 
+ * Param t  the tree to print
+ */
+void printFiles(Tree t){
+	TreeNode start = t->root;
+	char* str = malloc(sizeof(char)+1);
+	str[0] = '\0';
+	/*print the root*/
+	pFS(start, str,1);
 	free(str);
 }
 

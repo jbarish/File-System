@@ -41,5 +41,6 @@ void disposeTree(TreeNode t);
 
 void printPreOrder(Tree t);
 void printBFS(Tree t);
+void printFiles(Tree t);
 
 #endif

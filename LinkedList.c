@@ -57,8 +57,11 @@ void printLLString(LL q){
 void printLLInt(LL q){
 	Node curr = q->head;
 	while(curr!=NULL){
-		printf("%i->", *((int*)curr->elem));
+		printf("%i", *((int*)curr->elem));
 		curr = curr->next;
+		if(curr != NULL){
+		  printf("->");
+		}
 	}
 	printf("\n");
 }
@@ -100,7 +103,7 @@ void printTnode(LL q){
 }
 
 /*
- * Debugging Only: Prints all elements in the List from head to tail
+ * Prints all elements in the List from head to tail
  * ALERT: Elements MUST be a LDisk to use this function
  * 
  * Param q  The LinkedList
@@ -108,11 +111,10 @@ void printTnode(LL q){
 void printLDnode(LL q){
 	Node curr = q->head;
 	while(curr!=NULL){
-		printf("Min:%ld, Max:%ld, Status: %s ||", ((LDisk)curr->elem)->minBlock, 
-		((LDisk)curr->elem)->maxBlock, ((LDisk)curr->elem)->st== FREE ? "FREE" : "USED");
+		printf("%s: %ld-%ld\n", ((LDisk)curr->elem)->st== FREE ? "Free" : "In Use", ((LDisk)curr->elem)->minBlock, ((LDisk)curr->elem)->maxBlock);
+		
 		curr = curr->next;
 	}
-	printf("\n");
 }
 
 /*
