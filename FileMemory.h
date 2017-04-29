@@ -11,5 +11,5 @@
  char* getTimeAsString();
  void expand(TreeNode tn, LL l, long size);
  void shrink(TreeNode tn, LL l, long size);
- 
+ int enoughMemory(LL l, long size);
 #endif

@@ -402,6 +402,48 @@ void printPreOrder(Tree t){
 	free(str);
 }
 
+
+/*
+ * Preorder helper function
+ * Not for external use
+ */
+void pBFS(TreeNode t, char* path){
+	if(t!=NULL){
+		if(t->dir!=NULL){
+
+			for(int i = 0; i< getNumElements(t->children); i++){
+				printf("%s/%s/", path, (TreeNode)getElemAt(t->children, i)->dir);
+			}
+			
+			for(int i = 0; i< getNumElements(t->children); i++){
+				char* str = (char*)malloc(sizeof(char)*(strlen(path) + strlen(t->dir)+2));	
+				strcpy(str, path);
+				if(strlen(path)!=0){
+					strcat(str, "/");	
+				}
+				strcat(str, t->dir);
+				pBFS((TreeNode)getElemAt(t->children, i), str);
+				free(str);
+			}
+			
+		}
+	}
+}
+
+
+
+
+
+void printBFS(Tree t){
+	TreeNode start = t->root;
+	char* str = malloc(sizeof(char)+1);
+	str[0] = '\0';
+	strcpy(str, start->dir);
+	/*print the root*/
+	printf("%s/\n", start->dir);
+	pBFS(start, str);
+	free(str);
+}
 void disposeTree(TreeNode t){
 	if(t!=NULL){
 		if(t->dir!=NULL){
