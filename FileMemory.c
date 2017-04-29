@@ -90,6 +90,29 @@
  }
  
  /*
+  * Checks if there is enough memory
+  * 
+  * Param l   			 The LDisk List
+  * Param sizeRequested	 The amount of memory needed
+  * Return   1 if enough memory, 0 elsewise
+  */
+ int enoughMemory(LL l, long sizeRequested){
+	 long runTotal = 0;
+	 int counter = 0;
+	 for(int i = 0; i<getNumElements(l) &&runTotal <sizeRequested; i++){
+		 LDisk temp = ((LDisk)getElemAt(l, i));
+		 runTotal+= temp->st == FREE ? (temp->maxBlock - temp->minBlock +1): 0;
+	 }
+	 if(runTotal >=sizeRequested){
+		 return 1;
+	 }else{
+		 printf("Requested %ld bytes. Only %ld bytes available.", sizeRequested, runTotal);
+		 return 0;
+	 }
+ }
+ 
+ 
+ /*
   * Expand a file by a given size
   * 
   * Param tn   The TreeNode to expand to
