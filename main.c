@@ -311,8 +311,9 @@ int main(int argc, char *argv[]){
       printFiles(fileSystem);
     }else if(strcmp(buffer, "prdisk") == 0){
       printLDnode(lDiskList);
+		printf("fragmentation: %ld\n", getFragmentation(fileSystem->root));
     }else{
-		printf("Invalid Command.\n");
+		printf("-FILESYSTEM: %s: command not found\n", buffer);
 	}
     
   }

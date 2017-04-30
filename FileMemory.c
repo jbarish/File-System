@@ -183,3 +183,22 @@
 	 }
  }
  
+ /*
+  * Get the fragmentation of the tree directory
+  * Fragmentation is the number of bytes left at the end of the blocks.
+  *
+  * Param t  the files system
+  * Return   the amount of fragmentation
+  */
+ long getFragmentation(TreeNode t){
+	 long runTotal = 0;
+	if(t->dir == NULL){
+		return blockSize-(t->size%blockSize);
+	}
+	
+	for(int i = 0; i< getNumElements(t->children); i++){
+		runTotal+= getFragmentation((TreeNode)getElemAt(t->children, i));
+	}
+	return runTotal;
+ }
+ 
