@@ -260,8 +260,11 @@ int main(int argc, char *argv[]){
 		  strcat(temp, "/");
 		  strcat(temp, nameN);
 		  TreeNode td = parseTree(fileSystem, temp); 
-		  if(td != NULL && enoughMemory(lDiskList, sizeN)){
+		
+		  if(td != NULL && enoughMemory(lDiskList, sizeN) && td->dir ==NULL){
 			expand(td, lDiskList, sizeN);
+		  }else{
+			  printf("Must specify a filename only\n");
 		  }
 		  free(temp);
 		  temp = NULL;
@@ -280,8 +283,10 @@ int main(int argc, char *argv[]){
 		  strcat(temp, "/");
 		  strcat(temp, nameN);
 		  TreeNode td = parseTree(fileSystem, temp); 
-		  if(td != NULL){
+		  if(td != NULL && td->dir ==NULL){
 			shrink(td, lDiskList, sizeN);
+		  }else{
+			  printf("Must specify a filename only\n");
 		  }
 		  free(temp);
 		  temp = NULL;
@@ -296,12 +301,16 @@ int main(int argc, char *argv[]){
 		  strcat(temp, buffer + 7);
 		  TreeNode td = parseTree(fileSystem, temp); 
 		  if(td != NULL){
-			shrink(td, lDiskList, td->size);
+			if(td->dir==NULL){
+				shrink(td, lDiskList, td->size);
+			}
 			TreeNode tdTwo = deleteFromRoot(fileSystem, curDir, buffer + 7);
-			freeTreeNode(tdTwo);
+			if(tdTwo != NULL){
+				freeTreeNode(tdTwo);
+			}
 		  }
 		  free(temp);
-		temp = NULL;
+			temp = NULL;
 		}else {
 			printf("Must provide a filename to delete\n");
 		}

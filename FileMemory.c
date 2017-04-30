@@ -126,9 +126,15 @@
 	}
 	 tn->timestamp = getTimeAsString();
 	 long numBytesInLastBlock = tn->size%blockSize;
-	 tn->size +=size;
-	 size-= blockSize-numBytesInLastBlock;
-	 long numBlocks = (long)ceil((double)size/(double)blockSize);
+	
+	 
+	long oldBlocks = (long)ceil((double)tn->size/(double)blockSize);
+	//printf("  %ld, %d, %ld\n",oldBlocks, blockSize, tn->size);
+	 tn->size += size;
+	 long numBlocks = (long)ceil((double)tn->size/(double)blockSize);
+	// printf("%ld,  %ld, %d, %ld\n",numBlocks,oldBlocks, blockSize, tn->size);
+	 numBlocks -= oldBlocks;
+	 // printf("%ld,  %ld, %d, %ld\n",numBlocks,oldBlocks, blockSize, tn->size);
 	 for(int i = 0; i<getNumElements(l) && numBlocks >0; i++){
 		
 		Node temp = getNodeAt(l, i);
@@ -145,6 +151,7 @@
 				addToFileMemory(tn, ld->minBlock, ld->minBlock+blockSlots);
 				requestMemory(l, i, ld->minBlock, blockSlots, USED);
 				numBlocks-= blockSlots;
+				i=-1;
 			}
 		}
 	}
