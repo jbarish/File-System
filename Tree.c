@@ -156,7 +156,7 @@ TreeNode parseTree(Tree t, char* fullName){
 	numNames = counter; /*handle case of root directory ./ */
 	
 	if(t->root==NULL){
-		printf("Path does not exist in current file structure.");
+		printf("Path does not exist in current file structure.\n");
 		return NULL;
 	}
 	
@@ -169,7 +169,7 @@ TreeNode parseTree(Tree t, char* fullName){
 		int nodePos = check(curr->children, node);
 		
 		if(nodePos==-1){
-			printf("Path does not exist in current file structure.");
+			printf("Path does not exist in current file structure.\n");
 			return NULL;
 		}
 		curr = (TreeNode)getElemAt(curr->children, nodePos);
@@ -413,7 +413,9 @@ void freeTreeNode(TreeNode t){
 	}
 	
 	if(t->data!=NULL){
-		disposeLL(t->data);
+		 while(getNumElements(t->data)>0){
+			free(removeAt(t->data,0));
+		}
 		free(t->data);
 	}
 	free(t);

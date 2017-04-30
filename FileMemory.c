@@ -69,7 +69,7 @@
 		if(ld->st==FREE){
 		
 			long blockSlots = ld->maxBlock -ld->minBlock +1;
-			//	printf("blockSlots: %ld, numBlocks: %ld, size: %ld, ld->min: %ld, max:%ld\n", blockSlots, numBlocks, tn->size, ld->minBlock,ld->minBlock+numBlocks);
+				//printf("blockSlots: %ld, numBlocks: %ld, size: %ld, ld->min: %ld, max:%ld\n", blockSlots, numBlocks, tn->size, ld->minBlock,ld->minBlock+numBlocks);
 			if( blockSlots>= numBlocks){		
 				addToFileMemory(tn, ld->minBlock, (long)ld->minBlock+numBlocks);
 				requestMemory(l, i, ld->minBlock, numBlocks, USED);
@@ -80,6 +80,7 @@
 				requestMemory(l, i, ld->minBlock, blockSlots, USED);
 				
 				numBlocks-= blockSlots;
+				i=-1;
 			}
 		}
 	}
@@ -106,7 +107,7 @@
 	 if(runTotal >=sizeRequested){
 		 return 1;
 	 }else{
-		 printf("Requested %ld bytes. Only %ld bytes available.", sizeRequested, runTotal);
+		 printf("Requested %ld bytes. Only %ld bytes available.\n", sizeRequested, runTotal);
 		 return 0;
 	 }
  }
@@ -135,7 +136,7 @@
 		if(ld->st==FREE){
 		
 			long blockSlots = ld->maxBlock -ld->minBlock +1;
-				printf("blockSlots: %ld, numBlocks: %ld, size: %ld, ld->min: %ld, max:%ld\n", blockSlots, numBlocks, tn->size, ld->minBlock,ld->minBlock+numBlocks);
+				//printf("blockSlots: %ld, numBlocks: %ld, size: %ld, ld->min: %ld, max:%ld\n", blockSlots, numBlocks, tn->size, ld->minBlock,ld->minBlock+numBlocks);
 			if( blockSlots>= numBlocks){	
 				addToFileMemory(tn, ld->minBlock, (long)ld->minBlock+numBlocks);
 				requestMemory(l, i, ld->minBlock, numBlocks, USED);

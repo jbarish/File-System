@@ -18,7 +18,7 @@ long diskSize; /*size of disk, given as arg */
 
 LL lDiskList;
 char* curDir;
-
+  char* buffer;
 /*
  * Read in the directories from the fileName
  *
@@ -91,6 +91,14 @@ void printCur(char* curDir){
 /*exit the simulation*/
 void exitFileSystem(){
   //cleanup
+  disposeTree(fileSystem->root);
+  while(getNumElements(lDiskList)>0){
+	  free(removeAt(lDiskList,0));
+  }
+  free(lDiskList);
+  
+  free(fileSystem);
+  free(buffer);
   printf("Leaving FILESYSTEM...\n");
   exit(0);
 }
@@ -153,7 +161,7 @@ void cd(char* path){
  
 int main(int argc, char *argv[]){
   /*variables*/
-  char* buffer;
+
   curDir = (char*)malloc(2048);
   curDir[0] = '\0';
   buffer = (char*)malloc(2048);
@@ -226,70 +234,86 @@ int main(int argc, char *argv[]){
       /*Call allocate. This is in FileMemory.c . The first param is gotten from calling 
 	addFileFromRoot in Tree.c. Pass NULL as the timestamp param, and get size param from user input
 	The LL param is our lDiskList global variable, and the load param is 0 */
-      long sizeN;
-      char nameN[1024];
+      long sizeN=0;
+      char nameN[1024]="";
       sscanf(buffer+7, "%s %ld", nameN, &sizeN);
-      TreeNode treeNodeN = addFileFromRoot(fileSystem, curDir, nameN, sizeN, NULL);
-      if(treeNodeN == NULL){
-	/*null return*/
-      }else{
-	allocate(treeNodeN, lDiskList, 0);
-      }
+	  if(strlen(nameN)>0 && sizeN >0){
+		TreeNode treeNodeN = addFileFromRoot(fileSystem, curDir, nameN, sizeN, NULL);
+		if(treeNodeN != NULL &&enoughMemory(lDiskList, sizeN)){
+			allocate(treeNodeN, lDiskList, 0);
+		}
+	  }else{
+		 printf("Must provide filename and non-zero positive file size\n");
+	 }
     }else if(strncmp(buffer, "append", 6) == 0){
       /* Call expand. This is in FileMemory.c 
        * Get the first param by calling parseTree in tree.c, with fullname being the concatinated curDir and filename
        * LL is lDiskList
        * size is amount to add 
        */
-      long sizeN;
-      char nameN[1024];
+      long sizeN=0;
+      char nameN[1024] = "";
       sscanf(buffer+7, "%s %ld", nameN, &sizeN);
-	 
-      char* temp = (char*)malloc(2048);
-      strcpy(temp, curDir);
-      strcat(temp, "/");
-      strcat(temp, nameN);
-      TreeNode td = parseTree(fileSystem, temp); 
-      if(td != NULL && enoughMemory(lDiskList, sizeN)){
-		expand(td, lDiskList, sizeN);
-      }
-      free(temp);
-      temp = NULL;
+	 if(strlen(nameN)>0){
+		  char* temp = (char*)malloc(2048);
+		  strcpy(temp, curDir);
+		  strcat(temp, "/");
+		  strcat(temp, nameN);
+		  TreeNode td = parseTree(fileSystem, temp); 
+		  if(td != NULL && enoughMemory(lDiskList, sizeN)){
+			expand(td, lDiskList, sizeN);
+		  }
+		  free(temp);
+		  temp = NULL;
+	 }else{
+		 printf("Must provide filename\n");
+	 }
     }else if(strncmp(buffer, "remove", 6) == 0){
       /*same as append, but call shink*/
-      long sizeN;
-      char nameN[1024];
+      long sizeN=0;
+      char nameN[1024]="";
+	  
       sscanf(buffer+7, "%s %ld", nameN, &sizeN);
-      char* temp = (char*)malloc(2048);
-      strcpy(temp, curDir);
-      strcat(temp, "/");
-      strcat(temp, nameN);
-      TreeNode td = parseTree(fileSystem, temp); 
-      if(td != NULL){
-		shrink(td, lDiskList, sizeN);
-	  }
-      free(temp);
-      temp = NULL;
-    }else if(strncmp(buffer, "delete", 6) == 0){
-      char* temp = (char*)malloc(2048);
-      strcpy(temp, curDir);
-      strcat(temp, "/");
-      strcat(temp, buffer + 7);
-      TreeNode td = parseTree(fileSystem, temp); 
-      if(td != NULL){
-		shrink(td, lDiskList, td->size);
-		TreeNode tdTwo = deleteFromRoot(fileSystem, curDir, buffer + 7);
-		freeTreeNode(tdTwo);
-      }
-      free(temp);
-      temp = NULL;
+	  if(strlen(nameN)>0){
+		  char* temp = (char*)malloc(2048);
+		  strcpy(temp, curDir);
+		  strcat(temp, "/");
+		  strcat(temp, nameN);
+		  TreeNode td = parseTree(fileSystem, temp); 
+		  if(td != NULL){
+			shrink(td, lDiskList, sizeN);
+		  }
+		  free(temp);
+		  temp = NULL;
+	  }else{
+		 printf("Must provide filename\n");
+	 }
+    }else if(strncmp(buffer, "delete", 6) == 0 ){
+		if( strlen(buffer)>7){
+		  char* temp = (char*)malloc(2048);
+		  strcpy(temp, curDir);
+		  strcat(temp, "/");
+		  strcat(temp, buffer + 7);
+		  TreeNode td = parseTree(fileSystem, temp); 
+		  if(td != NULL){
+			shrink(td, lDiskList, td->size);
+			TreeNode tdTwo = deleteFromRoot(fileSystem, curDir, buffer + 7);
+			freeTreeNode(tdTwo);
+		  }
+		  free(temp);
+		temp = NULL;
+		}else {
+			printf("Must provide a filename to delete\n");
+		}
     }else if(strcmp(buffer, "dir") == 0){
 		printBFS(fileSystem);
     }else if(strcmp(buffer, "prfiles") == 0){
       printFiles(fileSystem);
     }else if(strcmp(buffer, "prdisk") == 0){
       printLDnode(lDiskList);
-    }
+    }else{
+		printf("Invalid Command.\n");
+	}
     
   }
   
