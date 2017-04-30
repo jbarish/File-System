@@ -29,6 +29,7 @@ LL makeLL(listType ty){
 	LL q =  (LL)malloc(sizeof(struct linkedlist));
 	q->numElements = 0;
 	q->head = NULL;
+	q->tail = NULL;
 	q->t = ty;
 	return q;
 }

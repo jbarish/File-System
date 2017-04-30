@@ -122,6 +122,7 @@ void cd(char* path){
       s=strtok(NULL, "/");
       
     }
+    numNames = counter;
     
   }else{
     names[0] = path;
@@ -234,16 +235,10 @@ int main(int argc, char *argv[]){
       /*Call allocate. This is in FileMemory.c . The first param is gotten from calling 
 	addFileFromRoot in Tree.c. Pass NULL as the timestamp param, and get size param from user input
 	The LL param is our lDiskList global variable, and the load param is 0 */
-      long sizeN=0;
-      char nameN[1024]="";
-      sscanf(buffer+7, "%s %ld", nameN, &sizeN);
-	  if(strlen(nameN)>0 && sizeN >0){
-		TreeNode treeNodeN = addFileFromRoot(fileSystem, curDir, nameN, sizeN, NULL);
-		if(treeNodeN != NULL &&enoughMemory(lDiskList, sizeN)){
-			allocate(treeNodeN, lDiskList, 0);
-		}
+	  if(strlen(buffer + 7) > 0){
+	    TreeNode treeNodeN = addFileFromRoot(fileSystem, curDir, buffer + 7, 0, getTimeAsString());
 	  }else{
-		 printf("Must provide filename and non-zero positive file size\n");
+		 printf("Must provide filename\n");
 	 }
     }else if(strncmp(buffer, "append", 6) == 0){
       /* Call expand. This is in FileMemory.c 
