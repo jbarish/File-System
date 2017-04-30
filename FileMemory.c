@@ -182,6 +182,9 @@
 	 //long numBlocks = (long)ceil((size-numBytesInLastBlock +1)/(double)blockSize);
 	 while(size>=0){
 		Node temp = getLastNode(tn->data);
+		if(temp==NULL){
+			break;
+		}
 		long blockAddr = *((long*)(temp->elem));
 		long blockID = blockAddr/blockSize;
 		free(removeNode(tn->data, temp));
