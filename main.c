@@ -222,6 +222,8 @@ int main(int argc, char *argv[]){
       cd(buffer+3);
     }else if(strcmp(buffer, "ls") == 0 && strlen(buffer)==2){
       printTnode(((TreeNode)parseTree(fileSystem, curDir))->children);
+    }else if(strcmp(buffer, "ls -l") == 0 && strlen(buffer)==5){
+      printTInfonode(((TreeNode)parseTree(fileSystem, curDir))->children);
     }else if(strncmp(buffer, "mkdir", 5) == 0){
       /*call addDirFromRoot. This is in Tree.c The tree param is the fileSystem global variable
        * The fullName param is the current directory (curDir) concatinated with the new directory to be added
@@ -246,7 +248,7 @@ int main(int argc, char *argv[]){
 	The LL param is our lDiskList global variable, and the load param is 0 */
 	  if(strlen(buffer + 7) > 0){
 	    TreeNode treeNodeN = addFileFromRoot(fileSystem, curDir, buffer + 7, 0, getTimeAsString());
-		TreeNode d = getParent(fileSystem, curDir);
+		TreeNode d = parseTree(fileSystem, curDir);
 		d->timestamp = getTimeAsString();
 	  }else{
 		 printf("Must provide filename\n");
@@ -272,7 +274,7 @@ int main(int argc, char *argv[]){
 		  
 		  if(td != NULL && enoughMemory(lDiskList, sizeN) && td->dir ==NULL){
 			expand(td, lDiskList, sizeN);
-			TreeNode d = getParent(fileSystem, curDir);
+			TreeNode d = parseTree(fileSystem, curDir);
 			d->timestamp = getTimeAsString();
 		  }else{
 			printf("Must specify a filename only\n");
@@ -299,7 +301,7 @@ int main(int argc, char *argv[]){
 	  TreeNode td = parseTree(fileSystem, temp); 
 	  if(td != NULL && td->dir ==NULL){
 	    shrink(td, lDiskList, sizeN);
-		TreeNode d = getParent(fileSystem, curDir);
+		TreeNode d = parseTree(fileSystem, curDir);
 		d->timestamp = getTimeAsString();
 	  }else{
 	    printf("Must specify a filename only\n");
@@ -320,7 +322,7 @@ int main(int argc, char *argv[]){
       if(td != NULL){
 	if(td->dir==NULL){
 	  shrink(td, lDiskList, td->size);
-	  TreeNode d = getParent(fileSystem, curDir);
+	  TreeNode d = parseTree(fileSystem, curDir);
 		d->timestamp = getTimeAsString();
 	}
 	TreeNode tdTwo = deleteFromRoot(fileSystem, curDir, buffer + 7);

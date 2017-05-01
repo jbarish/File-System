@@ -104,6 +104,28 @@ void printTnode(LL q){
 }
 
 /*
+ * Debugging Only: Prints all elements in the List from head to tail
+ * ALERT: Elements MUST be a TREENODE to use this function
+ * 
+ * Param q  The LinkedList
+ */
+void printTInfonode(LL q){
+	Node curr = q->head;
+	while(curr!=NULL){
+		TreeNode tn =  ((TreeNode)curr->elem);
+		if(tn->dir!=NULL){
+			printf("%s/\t\t%s\n",tn->dir, tn->timestamp);
+		}else if(tn->fileName != NULL){
+			printf("%s\t\t%ld\t\t%s\n",tn->fileName, tn->size, tn->timestamp);
+		}
+		curr = curr->next;
+	}
+	//printf("\n");
+}
+
+
+
+/*
  * Prints all elements in the List from head to tail
  * ALERT: Elements MUST be a LDisk to use this function
  * 

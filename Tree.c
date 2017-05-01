@@ -179,52 +179,6 @@ TreeNode parseTree(Tree t, char* fullName){
 	return curr;
 }
 
-/*
- * Given a tree, returns the parent to a specific node
- * 
- * Param t        The tree to parse
- * Param fullName The full name of the directory, starting from root
- * Return         Pointer to the last specified directory
- */
-TreeNode getParent(Tree t, char* fullName){
-	int numNames = countOccurance(fullName, '/') +1; 
-	char** names = (char**)malloc(sizeof(char*)*numNames);
-	int i=0;
-	int counter = 0;
-	char* tempName = (char*)malloc(sizeof(char)*strlen(fullName)+1);
-	strcpy(tempName, fullName);
-	char* s = strtok(tempName,"/");
-	
-	while(s!=NULL){
-		counter++;
-		names[i++] = s;
-		s = strtok(NULL,"/");
-	}
-	numNames = counter; /*handle case of root directory ./ */
-	
-	if(t->root==NULL){
-		printf("Path does not exist in current file structure.\n");
-		return NULL;
-	}
-	
-	TreeNode curr = t->root;
-	
-	/*curr is always 1 behind i*/
-	for(i = 1; i<numNames; i++){
-		
-		char* node = names[i];
-		int nodePos = check(curr->children, node);
-		
-		if(nodePos==-1){
-			printf("Path does not exist in current file structure.\n");
-			return NULL;
-		}
-		curr = (TreeNode)getElemAt(curr->children, nodePos);
-	}
-	free(names);
-	free(tempName);
-	return curr;
-}
 
 
 
