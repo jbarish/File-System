@@ -229,27 +229,40 @@ int main(int argc, char *argv[]){
        * The fullName param is the current directory (curDir) concatinated with the new directory to be added
        * Before you call addDirFromRoot, call pathExist to check if the directory already exists
        */
-
-      char* temp = (char*)malloc(2048);
-      strcpy(temp, curDir);
-      strcat(temp, "/");
-      strcat(temp, buffer + 6);
-      if(pathExist(fileSystem, temp)){
-	printf("directory already exists\n");
-      }else{
-	addDirFromRoot(fileSystem, temp);
-      }
-      free(temp);
-      temp = NULL;
+		if(countOccurance(buffer+6, '/')>0){
+			  printf("cannot have a / in your directory name\n");
+		  }else if ((countOccurance(buffer+6, '.')>0&& strlen(buffer+6)<2) ||
+					(countOccurance(buffer+6, '.')>1&& strlen(buffer+6)<3) ){
+			   printf("cannot have a . as your directory name\n");
+		  }else{
+			  char* temp = (char*)malloc(2048);
+			  strcpy(temp, curDir);
+			  strcat(temp, "/");
+			  strcat(temp, buffer + 6);
+			  if(pathExist(fileSystem, temp)){
+			printf("directory already exists\n");
+			  }else{
+			addDirFromRoot(fileSystem, temp);
+			  }
+			  free(temp);
+			  temp = NULL;
+		  }
       
     }else if(strncmp(buffer, "create", 6) == 0){
       /*Call allocate. This is in FileMemory.c . The first param is gotten from calling 
 	addFileFromRoot in Tree.c. Pass NULL as the timestamp param, and get size param from user input
 	The LL param is our lDiskList global variable, and the load param is 0 */
 	  if(strlen(buffer + 7) > 0){
-	    TreeNode treeNodeN = addFileFromRoot(fileSystem, curDir, buffer + 7, 0, getTimeAsString());
-		TreeNode d = parseTree(fileSystem, curDir);
-		d->timestamp = getTimeAsString();
+		  if(countOccurance(buffer+7, '/')>0){
+			  printf("cannot have a / in your file name\n");
+		  }else if ((countOccurance(buffer+7, '.')>0 && strlen(buffer+7)<2)||
+					(countOccurance(buffer+7, '.')>1&& strlen(buffer+7)<3) ){
+			   printf("cannot have a . as your file name\n");
+		  }else{
+			TreeNode treeNodeN = addFileFromRoot(fileSystem, curDir, buffer + 7, 0, getTimeAsString());
+			TreeNode d = parseTree(fileSystem, curDir);
+			d->timestamp = getTimeAsString();
+		  }
 	  }else{
 		 printf("Must provide filename\n");
 	 }
