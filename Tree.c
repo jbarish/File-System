@@ -228,7 +228,7 @@ int pathExist(Tree t, char* fullName){
 		
 		curr = (TreeNode)getElemAt(curr->children, nodePos);
 		if(curr!=NULL && curr->children == NULL){
-			return 0;
+			return 2;
 		}
 	}
 	free(names);

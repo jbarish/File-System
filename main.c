@@ -151,8 +151,13 @@ void cd(char* path){
       strcat(curDir, names[i]);
     }
   }
-  if(!pathExist(fileSystem,curDir)){
-    printf("Invalid Directory\n");
+  int pe = pathExist(fileSystem,curDir);
+  if(pe == 0 || pe == 2){
+    printf("Invalid Directory");
+	if(pe){
+		printf(" Cannot cd into a file");
+	}
+	printf("\n");
     strcpy(curDir, tempOldPath);
     free(tempOldPath);
   }
@@ -323,7 +328,9 @@ int main(int argc, char *argv[]){
     }else if(strcmp(buffer, "prdisk") == 0){
       printLDnode(lDiskList);
       printf("fragmentation: %ld\n", getFragmentation(fileSystem->root));
-    }else{
+    }else if (strncmp(buffer, "cd..",4)==0){
+		printf("-FILESYSTEM: invalid command. Try 'cd ..'\n");
+	} else{
       printf("-FILESYSTEM: %s: command not found\n", buffer);
     }
     
