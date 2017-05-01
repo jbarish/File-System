@@ -28,6 +28,7 @@ int countOccurance(char*, char);
 
 TreeNode parseTree(Tree t, char* fullName);
 int pathExist(Tree t, char* fullName);
+TreeNode getParent(Tree t, char* fullName);
 
 void addDirFromRoot(Tree t, char* fullName);
 TreeNode addFileFromRoot(Tree t, char* fullName, char* fileName, long size, char* timestamp);

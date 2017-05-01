@@ -58,26 +58,26 @@ void readFile(char* fileName){
   char nameOne[1024];
   char nameTwo[1024];
   long fileSize;
-  char timeStampM[7];
-  char timeStampN[5];
-  char timeStampTwo[13];
+  char timestampM[7];
+  char timestampN[5];
+  char timestampTwo[13];
   char fName[1024];
   fp = fopen(fileName, "r");
  
   /* read from file */
   while(fgets(str, 2048, fp) != NULL){
     if(strlen(str) > 1){ /*ensure no blank lines at end of file */
-      sscanf(str, "%ld %ld %s %ld %s %s %ld %s %s %s %[^\n]", &fstNum, &sndNum, perm, &thdNum, nameOne, nameTwo, &fileSize, timeStampM, timeStampN, timeStampTwo, fName); /*format input string into temp */
+      sscanf(str, "%ld %ld %s %ld %s %s %ld %s %s %s %[^\n]", &fstNum, &sndNum, perm, &thdNum, nameOne, nameTwo, &fileSize, timestampM, timestampN, timestampTwo, fName); /*format input string into temp */
  
-      char* timeStampF = (char*)malloc(sizeof(char) * 35);
-      timeStampF[0] = '\0';
-      strcat(timeStampF, timeStampM);
-      strcat(timeStampF, " ");
-      strcat(timeStampF, timeStampN);
-      strcat(timeStampF, " ");
-      strcat(timeStampF, timeStampTwo);
+      char* timestampF = (char*)malloc(sizeof(char) * 35);
+      timestampF[0] = '\0';
+      strcat(timestampF, timestampM);
+      strcat(timestampF, " ");
+      strcat(timestampF, timestampN);
+      strcat(timestampF, " ");
+      strcat(timestampF, timestampTwo);
      
-      allocate(addFullFileFromRoot(fileSystem, fName, fileSize, timeStampF), lDiskList, 1);
+      allocate(addFullFileFromRoot(fileSystem, fName, fileSize, timestampF), lDiskList, 1);
     }
   }
   fclose(fp);
@@ -246,6 +246,8 @@ int main(int argc, char *argv[]){
 	The LL param is our lDiskList global variable, and the load param is 0 */
 	  if(strlen(buffer + 7) > 0){
 	    TreeNode treeNodeN = addFileFromRoot(fileSystem, curDir, buffer + 7, 0, getTimeAsString());
+		TreeNode d = getParent(fileSystem, curDir);
+		d->timestamp = getTimeAsString();
 	  }else{
 		 printf("Must provide filename\n");
 	 }
@@ -270,6 +272,8 @@ int main(int argc, char *argv[]){
 		  
 		  if(td != NULL && enoughMemory(lDiskList, sizeN) && td->dir ==NULL){
 			expand(td, lDiskList, sizeN);
+			TreeNode d = getParent(fileSystem, curDir);
+			d->timestamp = getTimeAsString();
 		  }else{
 			printf("Must specify a filename only\n");
 		  }
@@ -295,6 +299,8 @@ int main(int argc, char *argv[]){
 	  TreeNode td = parseTree(fileSystem, temp); 
 	  if(td != NULL && td->dir ==NULL){
 	    shrink(td, lDiskList, sizeN);
+		TreeNode d = getParent(fileSystem, curDir);
+		d->timestamp = getTimeAsString();
 	  }else{
 	    printf("Must specify a filename only\n");
 	  }
@@ -314,6 +320,8 @@ int main(int argc, char *argv[]){
       if(td != NULL){
 	if(td->dir==NULL){
 	  shrink(td, lDiskList, td->size);
+	  TreeNode d = getParent(fileSystem, curDir);
+		d->timestamp = getTimeAsString();
 	}
 	TreeNode tdTwo = deleteFromRoot(fileSystem, curDir, buffer + 7);
 	if(tdTwo != NULL){
