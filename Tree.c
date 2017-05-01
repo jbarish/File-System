@@ -6,7 +6,7 @@
  */
  
  #include "Tree.h"
- 
+ #include "FileMemory.h"
  
 
 /*Initialize the tree
@@ -52,7 +52,7 @@ TreeNode makeDirNode(char* dirName){
 	d->children=makeLL(TREE);
 	d->fileName = NULL;
 	d->size = -1;
-	d->timestamp =NULL;
+	d->timestamp =getTimeAsString();
 	d->data = NULL;
 	return d;
 }

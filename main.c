@@ -99,6 +99,7 @@ void exitFileSystem(){
   
   free(fileSystem);
   free(buffer);
+  free(curDir);
   printf("Leaving FILESYSTEM...\n");
   exit(0);
 }
@@ -135,6 +136,8 @@ void cd(char* path){
 	printf("Invalid Directory\n");
 	strcpy(curDir, tempOldPath);
 	free(tempOldPath);
+	 free(tempName);
+  free(names);
 	return;
       }else{
 	char* newDir = strrchr(curDir, '/');
@@ -159,18 +162,19 @@ void cd(char* path){
 	}
 	printf("\n");
     strcpy(curDir, tempOldPath);
-    free(tempOldPath);
+    
   }
+  free(tempOldPath);
   free(tempName);
-  
+  free(names);
 }
  
 int main(int argc, char *argv[]){
   /*variables*/
 
-  curDir = (char*)malloc(2048);
+  curDir = (char*)malloc(sizeof(char)*2048);
   curDir[0] = '\0';
-  buffer = (char*)malloc(2048);
+  buffer = (char*)malloc(sizeof(char)*2048);
   size_t sizetoread = 2048;
   /*extract args and error check */
   if(argc < 5){
@@ -204,7 +208,7 @@ int main(int argc, char *argv[]){
  
   readFile(argv[1]);
   
-  curDir = ((TreeNode)(parseTree(fileSystem, "")))->dir;
+  strcpy(curDir ,((TreeNode)(parseTree(fileSystem, "")))->dir);
   
   //handle inputs 
   while(1){
@@ -255,23 +259,23 @@ int main(int argc, char *argv[]){
       char nameN[1024] = "";
       sscanf(buffer+7, "%s %ld", nameN, &sizeN);
       if(strlen(nameN)>0){
-	if(sizeN < 0){
-	  printf("Size cannot be less than 0\n");
-	}else{
-	  char* temp = (char*)malloc(2048);
-	  strcpy(temp, curDir);
-	  strcat(temp, "/");
-	  strcat(temp, nameN);
-	  TreeNode td = parseTree(fileSystem, temp); 
-	  
-	  if(td != NULL && enoughMemory(lDiskList, sizeN) && td->dir ==NULL){
-	    expand(td, lDiskList, sizeN);
-	  }else{
-	    printf("Must specify a filename only\n");
-	  }
-	  free(temp);
-	  temp = NULL;
-	}
+		if(sizeN < 0){
+		  printf("Size cannot be less than 0\n");
+		}else{
+		  char* temp = (char*)malloc(2048);
+		  strcpy(temp, curDir);
+		  strcat(temp, "/");
+		  strcat(temp, nameN);
+		  TreeNode td = parseTree(fileSystem, temp); 
+		  
+		  if(td != NULL && enoughMemory(lDiskList, sizeN) && td->dir ==NULL){
+			expand(td, lDiskList, sizeN);
+		  }else{
+			printf("Must specify a filename only\n");
+		  }
+		  free(temp);
+		  temp = NULL;
+		}
       }else{
 	printf("Must provide filename\n");
       }

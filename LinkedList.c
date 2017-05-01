@@ -194,52 +194,53 @@ void* removeAt(LL list, int pos){
  *
  */
 void addAt(LL list, int pos, void* elem){
-	
-	Node n = (Node)malloc(sizeof(struct node));
-	n->elem = elem;
-	n->next = NULL;
-	n->prev = NULL;
-	
-	/*if there is already stuff in the list*/
-	if(list->head!= NULL){
-		int i;
-		Node curr= list->head;
+	if(elem !=NULL){
+		Node n = (Node)malloc(sizeof(struct node));
+		n->elem = elem;
+		n->next = NULL;
+		n->prev = NULL;
 		
-		/*clamp pos between 0 and list length */
-		if(pos<0) {
-			pos=0;
-		}
-		if(pos>list->numElements) {
-			pos = list->numElements;
-		}
-		
-		for( i=0; i<list->numElements; i++){
-			if(i==pos){
-				/*if is first thing in list, reset head*/
-				if(curr->prev==NULL){
-					list->head = n;
-				}else{
-					curr->prev->next = n;
-				}
-				n->next = curr;
-				n->prev = curr->prev;
-				curr->prev = n;
-				
-				list->numElements++;
-				return;
+		/*if there is already stuff in the list*/
+		if(list->head!= NULL){
+			int i;
+			Node curr= list->head;
+			
+			/*clamp pos between 0 and list length */
+			if(pos<0) {
+				pos=0;
 			}
-			curr = curr->next;
+			if(pos>list->numElements) {
+				pos = list->numElements;
+			}
+			
+			for( i=0; i<list->numElements; i++){
+				if(i==pos){
+					/*if is first thing in list, reset head*/
+					if(curr->prev==NULL){
+						list->head = n;
+					}else{
+						curr->prev->next = n;
+					}
+					n->next = curr;
+					n->prev = curr->prev;
+					curr->prev = n;
+					
+					list->numElements++;
+					return;
+				}
+				curr = curr->next;
+			}
+			/*adding to end*/
+			list->tail->next = n;
+			n->prev = list->tail;
+			list->tail = n;
+			list->numElements++;
+		}else{
+			/*adding first thing in list*/
+			list->head = n;
+			list->tail = n;
+			list->numElements++;
 		}
-		/*adding to end*/
-		list->tail->next = n;
-		n->prev = list->tail;
-		list->tail = n;
-		list->numElements++;
-	}else{
-		/*adding first thing in list*/
-		list->head = n;
-		list->tail = n;
-		list->numElements++;
 	}
 }
 
@@ -251,20 +252,22 @@ void addAt(LL list, int pos, void* elem){
  *
  */
 void append(LL list, void* elem){
-	Node n = (Node)malloc(sizeof(struct node));
-	n->elem = elem;
-	n->next = NULL;
-	n->prev = NULL;
-	if(list->head!= NULL){
-		list->tail->next = n;
-		n->prev = list->tail;
-		list->tail = n;
-		list->numElements++;
-	}else{
-		
-		list->head = n;
-		list->tail = n;
-		list->numElements++;
+	if(elem!=NULL){
+		Node n = (Node)malloc(sizeof(struct node));
+		n->elem = elem;
+		n->next = NULL;
+		n->prev = NULL;
+		if(list->head!= NULL){
+			list->tail->next = n;
+			n->prev = list->tail;
+			list->tail = n;
+			list->numElements++;
+		}else{
+			
+			list->head = n;
+			list->tail = n;
+			list->numElements++;
+		}
 	}
 	//addAt(list, list->numElements, elem);
 }
