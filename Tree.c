@@ -501,6 +501,55 @@ void printBFS(Tree t){
 	pBFS(start, str);
 	free(str);
 }
+
+struct bfsInfo{
+	char* path;
+	TreeNode n;
+};typedef struct bfsInfo* BInfo;
+
+
+void printBFS2(Tree t){
+	LL temp = makeLL(LDISK); /*type doesn't matter*/
+	BInfo b= malloc(sizeof(struct bfsInfo));
+	b->n = t->root;
+	b->path = malloc(sizeof(char)*1);//t->dir;
+	(b->path)[0] = '\0';
+	append(temp, b);
+	while(!isEmpty(temp)){
+		BInfo bi = removeAt(temp, 0);
+		
+		if(strlen(bi->path)>0){
+			printf("%s/%s/\n", bi->path, (bi->n)->dir);
+			
+		}else{
+			printf("%s/\n", (bi->n)->dir);
+		}
+		
+		
+		for(int i = 0; i< getNumElements((bi->n)->children); i++){
+			TreeNode n = getElemAt((bi->n)->children, i);
+			
+			if(n->dir != NULL){
+				char* strTmp = malloc(sizeof(char)*(strlen(bi->path)+2 + strlen((bi->n)->dir)));
+				strcpy(strTmp, bi->path);
+				if(strlen(bi->path)>0){
+					strcat(strTmp, "/");
+				}
+				strcat(strTmp, (bi->n)->dir);
+				BInfo b= malloc(sizeof(struct bfsInfo));
+				b->n = n ;
+				b->path = strTmp;
+				append(temp, b);
+			}
+		}
+		free(bi->path);
+		free(bi);
+		
+	}
+	disposeLL(temp);
+	free(temp);
+}
+
 void disposeTree(TreeNode t){
 	if(t!=NULL){
 		if(t->dir!=NULL){

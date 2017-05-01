@@ -349,7 +349,7 @@ int main(int argc, char *argv[]){
 	printf("Must provide a filename to delete\n");
       }
     }else if(strcmp(buffer, "dir") == 0){
-      printBFS(fileSystem);
+      printBFS2(fileSystem);
     }else if(strcmp(buffer, "prfiles") == 0){
       printFiles(fileSystem);
     }else if(strcmp(buffer, "prdisk") == 0){
