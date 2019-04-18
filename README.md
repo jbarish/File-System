@@ -21,11 +21,11 @@ While running the program, the user can interact with the file system with the f
    ls                      list all files and sub-directories in the current directory   
    mkdir [name]            create a new directory in the current directory    
    create [name]           create a new file in the current directory   
-   aooend [name] [bytes]   add the number of bytes to a specific file   
+   append [name] [bytes]   add the number of bytes to a specific file   
    remove [name] [bytes]   remove the number of bytes from a specific file   
    delete [name]           delete the specified file   
         
-   exit     exit the program
+   exit     exit the program  
    dir      print out the directory tree in breadth-first order   
    prfiles  print out all file information (including the disk blocks allocated to each file   
    prdisk   print out the disk space information   
